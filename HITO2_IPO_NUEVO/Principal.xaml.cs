@@ -253,7 +253,7 @@ namespace HITO2_IPO_NUEVO
         private void rellenaCasillasRuta(object sender, SelectionChangedEventArgs e)
         {
 
-            if (ListBoxRutas.SelectedIndex != null)
+            if (ListBoxRutas.SelectedItem != null)
             {
                 int index = ListBoxRutas.SelectedIndex;
                 var rutaAux = listadoRutas[index];
@@ -480,7 +480,7 @@ namespace HITO2_IPO_NUEVO
         private void rellenaCasillasExcursionista(object sender, SelectionChangedEventArgs e)
         {
 
-            if (ListBoxExcursionistas.SelectedIndex != null)
+            if (ListBoxExcursionistas.SelectedItem != null)
             {
 
                 lb_rutasrealplaEx.Items.Clear();
@@ -703,7 +703,7 @@ namespace HITO2_IPO_NUEVO
 
         private void rellenaCasillasGuias(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxGuias.SelectedIndex != null)
+            if (ListBoxGuias.SelectedItem != null)
             {
                 lb_rutasrealplaGuias.Items.Clear();
                 cb_rutasGuias.IsEnabled = true;
@@ -902,7 +902,7 @@ namespace HITO2_IPO_NUEVO
 
         private void rellenaCasillasOferta(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxOfertas.SelectedIndex != null)
+            if (ListBoxOfertas.SelectedItem != null)
             {
                
                 int index = ListBoxOfertas.SelectedIndex;
