@@ -39,10 +39,9 @@ namespace HITO2_IPO_NUEVO
         {
             if (e.Key == Key.Return)
             {
-
                 pb_contrasena.IsEnabled = true;
                 pb_contrasena.Focus();
-            }
+            } 
         }
 
         private void pb_contrasena_KeyDown(object sender, KeyEventArgs e)

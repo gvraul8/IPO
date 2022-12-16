@@ -135,7 +135,6 @@
     <Resource Include="senderismo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Imagenes\Check.png" />
     <Resource Include="Imagenes\incorrect.png" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +187,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\fondoTab.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\check.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

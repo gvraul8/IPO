@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +29,8 @@ namespace HITO2_IPO_NUEVO
         List<Guia> listadoGuias = new List<Guia>();
         List<Oferta> listadoOfertas = new List<Oferta>();
         Usuario user;
+        private BitmapImage imagCheck = new BitmapImage(new Uri("/Imagenes/check.png", UriKind.Relative)); 
+        private BitmapImage imagCross = new BitmapImage(new Uri("/Imagenes/incorrect.png", UriKind.Relative));
 
         public Principal(Usuario u)
         {
@@ -35,9 +38,6 @@ namespace HITO2_IPO_NUEVO
             InitializeComponent();
             PrintUserData();
 
-            listadoGuias = CargarContenidoGuiasXML();
-            imprimirNombreGuias();
-            inicializaComponenentesGuias();
 
             listadoRutas = CargarContenidoRutasXML();
             imprimirNombreRutas();
@@ -47,6 +47,10 @@ namespace HITO2_IPO_NUEVO
             imprimirNombreExcursionistas();
             inicializaComponenentesExcursionistas();
 
+            listadoGuias = CargarContenidoGuiasXML();
+            imprimirNombreGuias();
+            inicializaComponenentesGuias();
+
             listadoOfertas = CargarContenidoOfertasXML();
             imprimirNombreOfertas();
             inicializaComponenentesOfertas();
@@ -54,9 +58,11 @@ namespace HITO2_IPO_NUEVO
             listadoPuntosInteres = CargarContenidoPuntosInteresXML();
             inicializaComponenentesPuntosInteres();
 
-
         }
 
+        ///////////////////////////////////////////////////////////////////////////
+        /// ---------------  DATOS USUARIO -------------------------------------
+        //////////////////////////////////////////////////////////////////////////
         void PrintUserData()
         {
             lbNombreUsuario.Content = user.Name.ToString(); ;
@@ -83,6 +89,10 @@ namespace HITO2_IPO_NUEVO
         {
             System.Diagnostics.Process.Start("https://github.com/gvraul8/IPO/wiki/AYUDA");
         }
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// ----------------------------  PESTAÑA RUTAS 
+        ///////////////////////////////////////////////////////////////////////////
 
         private void InsertarRutaEnXML(List<Ruta> listadoAux)
         {
@@ -149,7 +159,7 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 1;
         }
 
-        /*private void edicionTextBox(Boolean bloqueado)
+        private void edicionTextBox(Boolean bloqueado)
         {
             tb_nombre.IsReadOnly = bloqueado;
             tb_origen.IsReadOnly = bloqueado;
@@ -162,31 +172,13 @@ namespace HITO2_IPO_NUEVO
             if (bloqueado == false)
             {
                 tb_nombre.Text = "Escriba aqui el nombre de la ruta";
-                bt_editars.Content = "Seleccionar guia";
+                bt_verGuiaRuta.Content = "Seleccionar guia";
+                bt_consultarPDis.Content = "Añadir PDI";
                 bt_consultarPDis.IsEnabled = false;
                 tb_nombre.Focus();
             }
 
         }
-
-        private void bt_editar_Click(object sender, RoutedEventArgs e)
-        {
-            edicionTextBox(false);
-        }*/
-
-        
-
-
-
-
-
-
-
-
-
-        //RUTAS --------------------------------------------------------------------------------
-
-
 
         private void imprimirNombreRutas()
         {
@@ -196,7 +188,6 @@ namespace HITO2_IPO_NUEVO
             {
                 ListBoxRutas.Items.Add(listadoRutas[i].Nombre);
             }
-
         }
 
         private List<Ruta> CargarContenidoRutasXML()
@@ -253,23 +244,23 @@ namespace HITO2_IPO_NUEVO
             bt_editar.IsEnabled = false;
             bt_eliminar.IsEnabled = false;
 
-            bt_anadirs.IsEnabled = false;  //poner a true cuando se pulse el de añadir
+            bt_guardarRuta.IsEnabled = false;  //poner a true cuando se pulse el de añadir
             bt_consultarPDis.IsEnabled = false;
             bt_verGuiaRuta.IsEnabled = false;
+
         }
 
         private void rellenaCasillasRuta(object sender, SelectionChangedEventArgs e)
         {
 
-
-            if (ListBoxRutas.SelectedItem != null)
+            if (ListBoxRutas.SelectedIndex != null)
             {
                 int index = ListBoxRutas.SelectedIndex;
                 var rutaAux = listadoRutas[index];
 
                 tb_nombre.Text = rutaAux.Nombre.ToString();
                 tb_origen.Text = rutaAux.Origen.ToString();
-                tb_destino.Text = rutaAux.Destino.ToString();
+                tb_destino.Text = rutaAux.Origen.ToString();
                 tb_provincia.Text = rutaAux.Provincia.ToString();
                 tb_dificultad.Text = rutaAux.Dificultad.ToString();
                 tb_plazas.Text = rutaAux.PlazasDisponibles.ToString();
@@ -278,17 +269,15 @@ namespace HITO2_IPO_NUEVO
                 dp_fecha.Text = Convert.ToDateTime(rutaAux.Fecha.ToString()).ToString();
 
                 // https://stackoverflow.com/questions/18435829/showing-image-in-wpf-using-the-url-link-from-database
-                if (rutaAux.URL_RUTA != null)
-                {
-                    var fullFilePath = rutaAux.URL_RUTA.ToString();
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-                    bitmap.EndInit();
+                var fullFilePath = rutaAux.URL_RUTA.ToString();
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                bitmap.EndInit();
 
-                    img_ruta.Source = bitmap;
-                }
+                img_ruta.Source = bitmap;
 
+   
                 bt_anadir.IsEnabled = false;
                 bt_editar.IsEnabled = true;
                 bt_eliminar.IsEnabled = true;
@@ -300,7 +289,6 @@ namespace HITO2_IPO_NUEVO
             {
                 inicializaComponentesRutas();
             }
-
         }
 
         private void lstRutas_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
@@ -332,7 +320,7 @@ namespace HITO2_IPO_NUEVO
             var rutaElegida = listadoRutas[index];
             var guiaAux = rutaElegida.Guia;
 
-            tb_nombre_guia.Text = guiaAux.Name;
+            tb_nombreguia.Text = guiaAux.Name;
             tb_idiomas.Text = guiaAux.Idiomas;
             tb_telefonoguia.Text = guiaAux.Telefono;
             tb_correoguia.Text = guiaAux.Email;
@@ -354,8 +342,7 @@ namespace HITO2_IPO_NUEVO
         private void click_añadir_Ruta(object sender, RoutedEventArgs e)
         {
             inicializaComponentesRutas();
-            bt_anadirs.IsEnabled = true;
-            
+            bt_guardarRuta.IsEnabled = true;
         }
 
         //FALTA SELECCIONAR GUIA Y PDI PARA ASIGNAR---------------------------------------------------------------------------------------------------
@@ -377,7 +364,7 @@ namespace HITO2_IPO_NUEVO
 
             //dp_fecha.Text = Convert.ToDateTime(rutaAux.Fecha.ToString()).ToString();
 
-            
+
             listadoRutas.Add(rutaAux);
             imprimirNombreRutas();
 
@@ -397,7 +384,12 @@ namespace HITO2_IPO_NUEVO
 
 
 
-        //EXCURSIONISTAS ---------------------------------------------------------
+
+
+
+        ///////////////////////////////////////////////////////////////////////////
+        /// ----------------------------  PESTAÑA EXCURSIONISTAS
+        ///////////////////////////////////////////////////////////////////////////
 
 
         private void imprimirNombreExcursionistas()
@@ -407,7 +399,6 @@ namespace HITO2_IPO_NUEVO
             {
                 ListBoxExcursionistas.Items.Add(excursionista.Name);
             }
-
         }
 
         private List<Excursionista> CargarContenidoExcursionistasXML()
@@ -470,7 +461,7 @@ namespace HITO2_IPO_NUEVO
 
         void inicializaComponenentesExcursionistas()
         {
-            cb_rutasExcursionistas.IsEnabled = false;
+            cb_rutasEx.IsEnabled = false;
             cb_ofertas.IsEnabled = false;
             tb_nombre_excursionista.Text = "";
             tb_edad.Text =  "";
@@ -481,20 +472,20 @@ namespace HITO2_IPO_NUEVO
             bt_anadirExcursionista.IsEnabled = true;
             bt_editarExcursionista.IsEnabled = false;
             bt_eliminarExcursionista.IsEnabled = false;
-            lb_rutasrealplaExcursionista.Items.Clear();
+            lb_rutasrealplaEx.Items.Clear();
 
-            bt_guardarExcursionista.IsEnabled = false;
+            cb_rutasEx.IsEnabled = false;
         }
 
         private void rellenaCasillasExcursionista(object sender, SelectionChangedEventArgs e)
         {
 
-            if (ListBoxExcursionistas.SelectedItem != null)
+            if (ListBoxExcursionistas.SelectedIndex != null)
             {
 
-                lb_rutasrealplaExcursionista.Items.Clear();
-                //cb_ofertas.IsEnabled = true;
-                cb_rutasExcursionistas.IsEnabled = true;
+                lb_rutasrealplaEx.Items.Clear();
+                cb_ofertas.IsEnabled = true;
+                cb_rutasEx.IsEnabled = true;
 
                 int index = ListBoxExcursionistas.SelectedIndex;
                 var excursionistaAux = listadoExcursionistas[index];
@@ -503,14 +494,6 @@ namespace HITO2_IPO_NUEVO
                 tb_edad.Text = excursionistaAux.Edad.ToString();
                 tb_telefonoexcursionista.Text = excursionistaAux.Telefono;
                 tb_correoexcursionista.Text = excursionistaAux.Email;
-                if (excursionistaAux.Notificaciones)
-                {
-                    cb_ofertas.IsChecked = true;
-                }
-                else
-                {
-                    cb_ofertas.IsChecked = false;
-                }
                 if (excursionistaAux.ImgUrl != null)
                 {
                     var fullFilePath = excursionistaAux.ImgUrl.ToString();
@@ -520,7 +503,11 @@ namespace HITO2_IPO_NUEVO
                     bitmap.EndInit();
                     img_excursionista.Source = bitmap;
                 }
-                    
+
+                if (excursionistaAux.Notificaciones)
+                {
+                   //////////////////////////////////////////////////////////////////////////////////
+                }
 
                 bt_anadirExcursionista.IsEnabled = false;
                 bt_editarExcursionista.IsEnabled = true;
@@ -542,7 +529,7 @@ namespace HITO2_IPO_NUEVO
 
         private void ComboBoxRutasExcursionistas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedItem = cb_rutasExcursionistas.SelectedValue.ToString();
+            string selectedItem = cb_rutasEx.SelectedValue.ToString();
 
             if (selectedItem.Equals("System.Windows.Controls.ComboBoxItem: Rutas Realizadas"))
             {
@@ -556,33 +543,32 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimeRutasRealizarExcursionista()
         {
-            lb_rutasrealplaExcursionista.Items.Clear();
+            lb_rutasrealplaEx.Items.Clear();
             int index = ListBoxExcursionistas.SelectedIndex;
             var excursionistaAux = listadoExcursionistas[index];
 
             foreach (Ruta ruta in excursionistaAux.RutasRealizadas)
             {
-                lb_rutasrealplaExcursionista.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
+                lb_rutasrealplaEx.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
             }
         }
 
         private void imprimeRutasFuturasExcursionista()
         {
-            lb_rutasrealplaExcursionista.Items.Clear();
+            lb_rutasrealplaEx.Items.Clear();
             int index = ListBoxExcursionistas.SelectedIndex;
             var excursionistaAux = listadoExcursionistas[index];
 
             foreach (Ruta ruta in excursionistaAux.RutasFuturas)
             {
-                lb_rutasrealplaExcursionista.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
+                lb_rutasrealplaEx.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
             }
         }
-
 
         private void click_añadir_Excursionista(object sender, RoutedEventArgs e)
         {
             inicializaComponenentesExcursionistas();
-            bt_guardarExcursionista.IsEnabled = true;
+            bt_guardarEx.IsEnabled = true;
             cb_ofertas.IsEnabled = true;
 
         }
@@ -592,20 +578,21 @@ namespace HITO2_IPO_NUEVO
             //if (string.IsNullOrEmpty(Textbox1.Text))
             List<Ruta> listaRutasAux = new List<Ruta>();
             Excursionista excursionistaAux = new Excursionista("", "", "", "", "", DateTime.Today, "", 1, true, listaRutasAux, listaRutasAux);
-            
+
             excursionistaAux.Name = tb_nombre_excursionista.Text;
             excursionistaAux.Edad = int.Parse(tb_edad.Text);
             excursionistaAux.Telefono = tb_telefonoexcursionista.Text;
             excursionistaAux.Email = tb_correoexcursionista.Text;
-
-            if (cb_ofertas.IsChecked == true)
-            {
-                excursionistaAux.Notificaciones = true;
-            }
-            else
-            {
-                excursionistaAux.Notificaciones = false;
-            }
+            ////////
+            /// CAMBIAR ESTE IF PORQUE AHORA TENEMOS UN COMBOBOX
+           // if (cb_ofertas.IsChecked == true)
+           // {
+           //     excursionistaAux.Notificaciones = true;
+           // }
+           // else
+           // {
+           //     excursionistaAux.Notificaciones = false;
+           // }
 
             listadoExcursionistas.Add(excursionistaAux);
             imprimirNombreExcursionistas();
@@ -624,9 +611,9 @@ namespace HITO2_IPO_NUEVO
 
 
 
-
-
-        //GUÍAS ------------------------------------------------------------------------
+        ///////////////////////////////////////////////////////////////////////////
+        /// ----------------------------  PESTAÑA GUIAS
+        ///////////////////////////////////////////////////////////////////////////
 
 
         private void imprimirNombreGuias()
@@ -636,12 +623,10 @@ namespace HITO2_IPO_NUEVO
             {
                 ListBoxGuias.Items.Add(guia.Name);
             }
-
         }
 
         private List<Guia> CargarContenidoGuiasXML()
         {
-
             List<Guia> listado = new List<Guia>();
 
             // Cargar contenido de prueba
@@ -702,10 +687,9 @@ namespace HITO2_IPO_NUEVO
 
             cb_rutasGuias.IsEnabled = false;
 
-            tb_nombre_guia.Text = "";
+            tb_nombreguia.Text = "";
             tb_idiomas.Text = "";
             tb_correoguia.Text = "";
-            tb_telefonoguia.Text = "";
             tb_disponibilidad.Text = "";
             img_guia.Source = new BitmapImage();
 
@@ -719,8 +703,7 @@ namespace HITO2_IPO_NUEVO
 
         private void rellenaCasillasGuias(object sender, SelectionChangedEventArgs e)
         {
-
-            if (ListBoxGuias.SelectedItem != null)
+            if (ListBoxGuias.SelectedIndex != null)
             {
                 lb_rutasrealplaGuias.Items.Clear();
                 cb_rutasGuias.IsEnabled = true;
@@ -728,7 +711,7 @@ namespace HITO2_IPO_NUEVO
                 int index = ListBoxGuias.SelectedIndex;
                 var guiaAux = listadoGuias[index];
 
-                tb_nombre_guia.Text = guiaAux.Name;
+                tb_nombreguia.Text = guiaAux.Name;
                 tb_idiomas.Text = guiaAux.Idiomas;
                 tb_telefonoguia.Text = guiaAux.Telefono;
                 tb_correoguia.Text = guiaAux.Email;
@@ -743,11 +726,9 @@ namespace HITO2_IPO_NUEVO
                     bitmap.EndInit();
                     img_guia.Source = bitmap;
                 }
-                    
                 bt_anadirGuia.IsEnabled = false;
                 bt_editarGuia.IsEnabled = true;
                 bt_eliminarGuia.IsEnabled = true;
-                
             }
             else
             {
@@ -763,7 +744,6 @@ namespace HITO2_IPO_NUEVO
                 ListBoxGuias.SelectedItem = null;
             }
         }
-
 
         private void ComboBoxRutasGuias_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -792,13 +772,13 @@ namespace HITO2_IPO_NUEVO
             {
                 for (int i = 0; i < listadoGuias.Count; i++)
                 {
-                    if (listadoGuias[i].Name == tb_nombre_guia.Text)
+                    if (listadoGuias[i].Name == tb_nombreguia.Text)
                     {
                         guiaAux = listadoGuias[i];
                     }
                 }
             }
-            
+
             foreach (Ruta ruta in guiaAux.RutasRealizadas)
             {
                 lb_rutasrealplaGuias.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
@@ -818,7 +798,7 @@ namespace HITO2_IPO_NUEVO
             {
                 for (int i = 0; i < listadoGuias.Count; i++)
                 {
-                    if (listadoGuias[i].Name == tb_nombre_guia.Text)
+                    if (listadoGuias[i].Name == tb_nombreguia.Text)
                     {
                         guiaAux = listadoGuias[i];
                     }
@@ -842,10 +822,10 @@ namespace HITO2_IPO_NUEVO
             //if (string.IsNullOrEmpty(Textbox1.Text))
 
             List<Ruta> listaRutasAux = new List<Ruta>();
-            Guia guiaAux = new Guia("", "", "", "", "", DateTime.Today, "", "", "", listaRutasAux, listaRutasAux); 
+            Guia guiaAux = new Guia("", "", "", "", "", DateTime.Today, "", "", "", listaRutasAux, listaRutasAux);
 
 
-            guiaAux.Name = tb_nombre_guia.Text;
+            guiaAux.Name = tb_nombreguia.Text;
             guiaAux.Idiomas = tb_idiomas.Text;
             guiaAux.Telefono = tb_telefonoguia.Text;
             guiaAux.Email = tb_correoguia.Text;
@@ -864,15 +844,10 @@ namespace HITO2_IPO_NUEVO
 
 
 
+        ///////////////////////////////////////////////////////////////////////////
+        /// ----------------------------  PESTAÑA OFERTAS
+        ///////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-        //OFERTAS ---------------------------------------------------------------
 
         private void imprimirNombreOfertas()
         {
@@ -885,7 +860,6 @@ namespace HITO2_IPO_NUEVO
 
         private List<Oferta> CargarContenidoOfertasXML()
         {
-
             List<Oferta> listado = new List<Oferta>();
 
             // Cargar contenido de prueba
@@ -916,10 +890,10 @@ namespace HITO2_IPO_NUEVO
         {
             tb_nombre_oferta.Text = "";
             tb_rutaOferta.Text = "";
-            tb_descricpcionoferta.Text = "";
+            tb_descripcionoferta.Text = "";
             img_oferta.Source = new BitmapImage();
 
-            bt_anadirOferta.IsEnabled = true;
+            bt_anadirOfeta.IsEnabled = true;
             bt_editarOferta.IsEnabled = false;
             bt_eliminarOferta.IsEnabled = false;
 
@@ -928,7 +902,7 @@ namespace HITO2_IPO_NUEVO
 
         private void rellenaCasillasOferta(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxOfertas.SelectedItem != null)
+            if (ListBoxOfertas.SelectedIndex != null)
             {
                
                 int index = ListBoxOfertas.SelectedIndex;
@@ -936,7 +910,7 @@ namespace HITO2_IPO_NUEVO
 
                 tb_nombre_oferta.Text = ofertaAux.Id.ToString();
                 tb_rutaOferta.Text = ofertaAux.Ruta.Nombre;
-                tb_descricpcionoferta.Text = ofertaAux.Descripcion;
+                tb_descripcionoferta.Text = ofertaAux.Descripcion;
 
                 if (ofertaAux.IMG_OFERTA != null)
                 {
@@ -947,9 +921,8 @@ namespace HITO2_IPO_NUEVO
                     bitmap.EndInit();
                     img_oferta.Source = bitmap;
                 }
-                    
 
-                bt_anadirOferta.IsEnabled = false;
+                bt_anadirOfeta.IsEnabled = false;
                 bt_editarOferta.IsEnabled = true;
                 bt_eliminarOferta.IsEnabled = true;
             }
@@ -959,6 +932,7 @@ namespace HITO2_IPO_NUEVO
             }
 
         }
+
         private void lstOfertas_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
         {
             if (controlUnderMouse.GetType() != typeof(ListBoxItem))
@@ -973,7 +947,6 @@ namespace HITO2_IPO_NUEVO
             bt_guardarOferta.IsEnabled = true;
         }
 
-
         //FALTA SELECCIONAR RUTA PARA ASIGNAR---------------------------------------------------------------------------------------------------
         private void clickGuardarOferta(object sender, RoutedEventArgs e)
         {
@@ -983,7 +956,7 @@ namespace HITO2_IPO_NUEVO
             Oferta ofertaAux = new Oferta(0, rutaAux, "");
 
             ofertaAux.Id = int.Parse(tb_nombre_oferta.Text);
-            ofertaAux.Descripcion = tb_descricpcionoferta.Text;
+            ofertaAux.Descripcion = tb_descripcionoferta.Text;
             //ofertaAux.Ruta = extraeRutaParaOferta();
 
             foreach (Ruta rutaAuxx in listadoRutas)
@@ -996,9 +969,7 @@ namespace HITO2_IPO_NUEVO
 
             listadoOfertas.Add(ofertaAux);
             imprimirNombreOfertas();
-
         }
-
 
         private Ruta extraeRutaParaOferta()
         {
@@ -1021,18 +992,14 @@ namespace HITO2_IPO_NUEVO
 
 
 
-
-
-
-
-        //PUNTOS DE INTERES -------------------------------------------------------------------------------
-
+        ///////////////////////////////////////////////////////////////////////////
+        /// ----------------------------  PESTAÑA PDIs
+        ///////////////////////////////////////////////////////////////////////////
 
 
 
         private List<PuntoInteres> CargarContenidoPuntosInteresXML()
         {
-
 
             List<PuntoInteres> listado = new List<PuntoInteres>();
             // Cargar contenido de prueba
@@ -1082,22 +1049,19 @@ namespace HITO2_IPO_NUEVO
 
             foreach (PuntoInteres puntoInteres in listadoPuntosInteres)
             {
-               
-                    ListBoxPDI.Items.Add(puntoInteres.Nombre);
-                
-
+                ListBoxPDI.Items.Add(puntoInteres.Nombre);
             }
         }
 
         private void inicializaComponenentesPuntosInteres()
         {
-            lb_nombre_pdi.Content = "";
-            tb_descricpcionpdi.Text = "";
+            tb_nombre_pdi.Text = "";
+            tb_descripcionpdi.Text = "";
             img_pdi.Source = new BitmapImage();
 
             bt_anadirPdi.IsEnabled = true;
             bt_editarPdi.IsEnabled = false;
-            bt_eliminarPDI.IsEnabled = false;
+            bt_eliminarPdi.IsEnabled = false;
 
             bt_guardarPDI.IsEnabled = false;
 
@@ -1108,14 +1072,13 @@ namespace HITO2_IPO_NUEVO
             if (ListBoxPDI.SelectedItem != null)
             {
                 int index = ListBoxPDI.SelectedIndex;
-                
                 foreach (PuntoInteres puntoInteres in listadoPuntosInteres)
                 {
                     if (puntoInteres.Nombre == ListBoxPDI.SelectedItem.ToString())
                     {
-                        lb_nombre_pdi.Content = puntoInteres.Nombre;
-                        tb_descricpcionpdi.Text = puntoInteres.Descripcion;
+                        tb_nombre_pdi.Text = puntoInteres.Nombre;
 
+                        tb_descripcionpdi.Text = puntoInteres.Descripcion;
 
                         if (puntoInteres.URL_IMAGEN != null)
                         {
@@ -1125,16 +1088,12 @@ namespace HITO2_IPO_NUEVO
                             bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
                             bitmap.EndInit();
                             img_pdi.Source = bitmap;
-                        }       
-
+                        }
                     }
-
                 }
-
-
                 bt_anadirPdi.IsEnabled = false;
                 bt_editarPdi.IsEnabled = true;
-                bt_eliminarPDI.IsEnabled = true;
+                bt_eliminarPdi.IsEnabled = true;
             }
             else
             {
@@ -1156,19 +1115,17 @@ namespace HITO2_IPO_NUEVO
             bt_guardarPDI.IsEnabled = true;
         }
 
-
-        
         private void clickGuardarPDI(object sender, RoutedEventArgs e)
         {
             //if (string.IsNullOrEmpty(Textbox1.Text))
 
             Ruta rutaAux = null;
-            PuntoInteres puntoInteresAux = new PuntoInteres("","", rutaAux);
+            PuntoInteres puntoInteresAux = new PuntoInteres("", "", rutaAux);
 
 
             puntoInteresAux.Nombre = tb_nombre_pdi.Text;
-            puntoInteresAux.Descripcion = tb_descricpcionpdi.Text;
-            
+            puntoInteresAux.Descripcion = tb_descripcionpdi.Text;
+
 
             foreach (Ruta rutaAuxx in listadoRutas)
             {
@@ -1181,6 +1138,90 @@ namespace HITO2_IPO_NUEVO
             listadoPuntosInteres.Add(puntoInteresAux);
             imprimirTodosNombrePuntosInteres();
 
+        }
+
+
+        //---------------  CONTROL DE ENTRADAS  -------------------------------
+
+
+        private void NumericOnly(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextNumeric(e.Text);
+            if (e.Handled == false)
+            {
+                img_tb_plazas.Source=imagCheck;
+                img_tb_plazas.Visibility = Visibility.Visible;
+                img_tb_plazas.ToolTip="Formato adecuado";
+            }
+            else
+            {
+                img_tb_plazas.Source=imagCross;
+                img_tb_plazas.Visibility = Visibility.Visible;
+                img_tb_plazas.ToolTip="Debes introducir un formato numerico";
+            }
+
+        }
+
+        private static bool IsTextNumeric(string str)
+        {
+            System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex("[^0-9]");
+            return reg.IsMatch(str);
+        }
+        private void tb_origen_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                tb_destino.Focus();
+
+            }
+        }
+
+        private void tb_destino_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                tb_provincia.Focus();
+            }
+        }
+
+        private void tb_provincia_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                dp_fecha.Focus();
+            } 
+        }
+
+        private void dp_fecha_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                tb_dificultad.Focus();
+            }
+        }
+
+        private void tb_dificultad_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                tb_plazas.Focus();
+            }
+        }
+
+        private void bt_editar_Click(object sender, RoutedEventArgs e)
+        {
+            edicionTextBox(false);
+            tb_nombre.Focus();
+        }
+
+        private void bt_anadir_Click(object sender, RoutedEventArgs e)
+        {
+            edicionTextBox(false);
+            tb_nombre.Focus();
+        }
+        private void bt_consultarguia_Click(object sender, RoutedEventArgs e)
+        {
+            tcPestanas.SelectedIndex = 0;
         }
 
     }

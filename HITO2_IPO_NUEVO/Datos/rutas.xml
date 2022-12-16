@@ -2,27 +2,27 @@
 <Cabecera>
 	<Ruta Nombre="Ruta de Valhondo" Origen="Finca la Gargantilla" Destino="Finca la Gargantilla" Provincia ="Ciudad Real"
             Fecha ="20/12/2022 10:00:00" Dificultad="Media - Baja"
-            PlazasDisponibles="10" MaterialNecesario="Ropa deportiva" NumeroDeRealizaciones = "40" Guia="User3"
+            PlazasDisponibles="10" MaterialNecesario="Ropa deportiva" NumeroDeRealizaciones = "40" 
 		    URL_RUTA="https://www.komandokroketa.org/barranco-valhondo/00-track-barranco-valhondo.jpg"
 		    URL_INTERES ="http://runandwalk.opennemas.com/media/runandwalk/images/2014/11/03//2014110320093846749.jpg"/>
     <Ruta Nombre="Senda del Boquerón del Estena" Origen="Navas de Estena" Destino="Navas de Estena" Provincia ="Madrid"
             Fecha ="10/02/2020 12:00:00" Dificultad="Baja"
-            PlazasDisponibles="8" MaterialNecesario="Ropa deportiva" NumeroDeRealizaciones = "12"  Guia="User4"
+            PlazasDisponibles="8" MaterialNecesario="Ropa deportiva" NumeroDeRealizaciones = "12" 
 		    URL_RUTA="https://static-maps.alltrails.com/production/at-map/30801973/v1-trail-spain-ciudad-real-senda-del-boqueron-del-estena-at-map-30801973-1645067515-414w200h-en-US-i-2-style_1.png"
 		    URL_INTERES ="https://losviajesdeali.com/wp-content/uploads/2018/10/ruta-del-boquer%C3%B3n-de-estena-10.jpg"/>
 	<Ruta Nombre="Ruta de Pradera de Ordesa" Origen="Gradas de Soaso" Destino="Cascada de Arripas" Provincia ="Menorca"
             Fecha ="13/11/2021 14:00:00" Dificultad="Alta"
-            PlazasDisponibles="2" MaterialNecesario="Calzado de montaña" NumeroDeRealizaciones = "21" Guia="User3"
+            PlazasDisponibles="2" MaterialNecesario="Calzado de montaña" NumeroDeRealizaciones = "21"
 		    URL_RUTA="https://www.aramon.com/blog/wp-content/uploads/2019/07/rutas-ordesa-ni%C3%B1os.jpg"
 		    URL_INTERES ="https://www.aramon.com/blog/wp-content/uploads/2019/07/ordesa-ni%C3%B1os.jpg"/>
 	<Ruta Nombre="Cahorros del Río Chillar" Origen="Nerja" Destino="Parque Natural del Alto Tajo" Provincia ="Málaga"
             Fecha ="22/07/2026 15:00:00" Dificultad="Media-Alta"
-            PlazasDisponibles="23" MaterialNecesario="Chubasquero" NumeroDeRealizaciones = "100" Guia="User4"
+            PlazasDisponibles="23" MaterialNecesario="Chubasquero" NumeroDeRealizaciones = "100"
 		    URL_RUTA="https://content.skyscnr.com/m/063a88ab4013e626/original/GettyImages-482351109_doc.jpg"
 		    URL_INTERES ="https://content.skyscnr.com/m/6010a8783baddb28/original/GettyImages-167492760.jpg"/>
 	<Ruta Nombre="Parque Natural del Gorbea" Origen="Los Lavaderos de la Reina" Destino="Macizo del Turbón" Provincia ="País Vasco"
             Fecha ="03/01/2025 09:00:00" Dificultad="Baja"
-            PlazasDisponibles="14" MaterialNecesario="Mochila espaciosa" NumeroDeRealizaciones = "5" Guia="User3"
+            PlazasDisponibles="14" MaterialNecesario="Mochila espaciosa" NumeroDeRealizaciones = "5"
 		    URL_RUTA="https://content.skyscnr.com/m/462f7c273fac6438/original/GettyImages-474781630.jpg"
 		    URL_INTERES ="https://content.skyscnr.com/m/471d45c35b6d2e36/original/GettyImages-177474842_doc.jpg"/>
 

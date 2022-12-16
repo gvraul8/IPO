@@ -21,7 +21,7 @@ namespace HITO2_IPO_NUEVO
         public Uri URL_RUTA { set; get; }
         //public Uri URL_INTERES { set; get; }
 
-        public Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones,Guia guia)
+        public Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones, Guia guia)
         {
             Nombre = nombre;
             Origen = origen;
@@ -38,4 +38,5 @@ namespace HITO2_IPO_NUEVO
     }
 
 }
+
 
