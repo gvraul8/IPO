@@ -35,6 +35,9 @@ namespace HITO2_IPO_NUEVO
             InitializeComponent();
             PrintUserData();
 
+            listadoGuias = CargarContenidoGuiasXML();
+            imprimirNombreGuias();
+            inicializaComponenentesGuias();
 
             listadoRutas = CargarContenidoRutasXML();
             imprimirNombreRutas();
@@ -43,10 +46,6 @@ namespace HITO2_IPO_NUEVO
             listadoExcursionistas = CargarContenidoExcursionistasXML();
             imprimirNombreExcursionistas();
             inicializaComponenentesExcursionistas();
-
-            listadoGuias = CargarContenidoGuiasXML();
-            imprimirNombreGuias();
-            inicializaComponenentesGuias();
 
             listadoOfertas = CargarContenidoOfertasXML();
             imprimirNombreOfertas();
@@ -150,7 +149,7 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 1;
         }
 
-        private void edicionTextBox(Boolean bloqueado)
+        /*private void edicionTextBox(Boolean bloqueado)
         {
             tb_nombre.IsReadOnly = bloqueado;
             tb_origen.IsReadOnly = bloqueado;
@@ -173,7 +172,7 @@ namespace HITO2_IPO_NUEVO
         private void bt_editar_Click(object sender, RoutedEventArgs e)
         {
             edicionTextBox(false);
-        }
+        }*/
 
         
 
@@ -191,10 +190,13 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreRutas()
         {
-            foreach (Ruta ruta in listadoRutas)
+            ListBoxRutas.Items.Clear();
+
+            for (int i = 0; i < listadoRutas.Count; i++)
             {
-                ListBoxRutas.Items.Add(ruta.Nombre);
+                ListBoxRutas.Items.Add(listadoRutas[i].Nombre);
             }
+
         }
 
         private List<Ruta> CargarContenidoRutasXML()
@@ -209,8 +211,9 @@ namespace HITO2_IPO_NUEVO
             doc.Load(fichero.Stream);
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
+                Guia guiaAux = null;
                 //Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones)
-                var nuevaRuta = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0);
+                var nuevaRuta = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
                 nuevaRuta.Nombre = node.Attributes["Nombre"].Value;
                 nuevaRuta.Origen = node.Attributes["Origen"].Value;
                 nuevaRuta.Destino = node.Attributes["Destino"].Value;
@@ -221,6 +224,13 @@ namespace HITO2_IPO_NUEVO
                 nuevaRuta.MaterialNecesario = node.Attributes["MaterialNecesario"].Value;
                 nuevaRuta.NumeroDeRealizaciones = Convert.ToInt32(node.Attributes["NumeroDeRealizaciones"].Value);
                 nuevaRuta.URL_RUTA = new Uri(node.Attributes["URL_RUTA"].Value, UriKind.Absolute);
+                for (int i = 0; i < listadoGuias.Count; i++)
+                {
+                    if (listadoGuias[i].Name == node.Attributes["Guia"].Value)
+                    {
+                        nuevaRuta.Guia = listadoGuias[i];
+                    }
+                }
                 //nuevaRuta.URL_INTERES = new Uri(node.Attributes["URL_INTERES"].Value, UriKind.Absolute);
                 listado.Add(nuevaRuta);
             }
@@ -245,22 +255,21 @@ namespace HITO2_IPO_NUEVO
 
             bt_anadirs.IsEnabled = false;  //poner a true cuando se pulse el de añadir
             bt_consultarPDis.IsEnabled = false;
-
-            //quedaría deshabilitar boton GUARDAR CUANDO LO CREEN (SE ACTIVARÁ SÓLO CUANDO E PULSE AÑADIR O EDITAR)
+            bt_verGuiaRuta.IsEnabled = false;
         }
 
         private void rellenaCasillasRuta(object sender, SelectionChangedEventArgs e)
         {
 
 
-            if (ListBoxRutas.SelectedIndex > -1)
+            if (ListBoxRutas.SelectedItem != null)
             {
                 int index = ListBoxRutas.SelectedIndex;
                 var rutaAux = listadoRutas[index];
 
                 tb_nombre.Text = rutaAux.Nombre.ToString();
                 tb_origen.Text = rutaAux.Origen.ToString();
-                tb_destino.Text = rutaAux.Origen.ToString();
+                tb_destino.Text = rutaAux.Destino.ToString();
                 tb_provincia.Text = rutaAux.Provincia.ToString();
                 tb_dificultad.Text = rutaAux.Dificultad.ToString();
                 tb_plazas.Text = rutaAux.PlazasDisponibles.ToString();
@@ -269,33 +278,37 @@ namespace HITO2_IPO_NUEVO
                 dp_fecha.Text = Convert.ToDateTime(rutaAux.Fecha.ToString()).ToString();
 
                 // https://stackoverflow.com/questions/18435829/showing-image-in-wpf-using-the-url-link-from-database
-                var fullFilePath = rutaAux.URL_RUTA.ToString();
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-                bitmap.EndInit();
+                if (rutaAux.URL_RUTA != null)
+                {
+                    var fullFilePath = rutaAux.URL_RUTA.ToString();
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                    bitmap.EndInit();
 
-                img_ruta.Source = bitmap;
-
-                //var fullFilePath2 = rutaAux.URL_INTERES.ToString();
-                //BitmapImage bitmap2 = new BitmapImage();
-                //bitmap2.BeginInit();
-                //bitmap2.UriSource = new Uri(fullFilePath2, UriKind.Absolute);
-                //bitmap2.EndInit();
-
-                //img_interesRuta.Source = bitmap2;
+                    img_ruta.Source = bitmap;
+                }
 
                 bt_anadir.IsEnabled = false;
                 bt_editar.IsEnabled = true;
                 bt_eliminar.IsEnabled = true;
 
                 bt_consultarPDis.IsEnabled = true;
+                bt_verGuiaRuta.IsEnabled = true;
             }
             else
             {
                 inicializaComponentesRutas();
             }
 
+        }
+
+        private void lstRutas_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                ListBoxRutas.SelectedItem = null;
+            }
         }
 
         private void bt_consultarPDis_Click(object sender, RoutedEventArgs e)
@@ -309,14 +322,65 @@ namespace HITO2_IPO_NUEVO
             imprimirNombrePuntosInteres(rutaAux.Nombre);
         }
 
+        private void click_consultar_guia_ruta(object sender, RoutedEventArgs e)
+        {
+            tcPestanas.SelectedIndex = 1;
+            lb_rutasrealplaGuias.Items.Clear();
+            cb_rutasGuias.IsEnabled = true;
+
+            int index = ListBoxRutas.SelectedIndex;
+            var rutaElegida = listadoRutas[index];
+            var guiaAux = rutaElegida.Guia;
+
+            tb_nombre_guia.Text = guiaAux.Name;
+            tb_idiomas.Text = guiaAux.Idiomas;
+            tb_telefonoguia.Text = guiaAux.Telefono;
+            tb_correoguia.Text = guiaAux.Email;
+            tb_disponibilidad.Text = guiaAux.Disponibilidad;
+
+            var fullFilePath = guiaAux.ImgUrl.ToString();
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+            bitmap.EndInit();
+            img_guia.Source = bitmap;
+
+            bt_anadirGuia.IsEnabled = false;
+            bt_editarGuia.IsEnabled = true;
+            bt_eliminarGuia.IsEnabled = true;
+
+        }
+
         private void click_añadir_Ruta(object sender, RoutedEventArgs e)
         {
             inicializaComponentesRutas();
+            bt_anadirs.IsEnabled = true;
+            
         }
 
+        private void clickGuardarRuta(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrEmpty(Textbox1.Text))
 
+            Guia guiaAux = null;
+            var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
+            rutaAux.Nombre = tb_nombre.Text;
+            rutaAux.Origen = tb_origen.Text;
+            rutaAux.Destino = tb_destino.Text;
+            rutaAux.Provincia = tb_provincia.Text;
+            rutaAux.Dificultad = tb_dificultad.Text;
+            rutaAux.PlazasDisponibles = int.Parse(tb_plazas.Text);
+            rutaAux.Fecha = Convert.ToDateTime(dp_fecha.Text);
+            //tb_material.Text = rutaAux.MaterialNecesario.ToString();
+            //tb_realizaciones.Text = rutaAux.NumeroDeRealizaciones.ToString();
 
+            //dp_fecha.Text = Convert.ToDateTime(rutaAux.Fecha.ToString()).ToString();
 
+            
+            listadoRutas.Add(rutaAux);
+            imprimirNombreRutas();
+
+        }
 
 
 
@@ -337,6 +401,7 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreExcursionistas()
         {
+            ListBoxExcursionistas.Items.Clear();
             foreach (Excursionista excursionista in listadoExcursionistas)
             {
                 ListBoxExcursionistas.Items.Add(excursionista.Name);
@@ -346,7 +411,7 @@ namespace HITO2_IPO_NUEVO
 
         private List<Excursionista> CargarContenidoExcursionistasXML()
         {
-            listadoRutas = CargarContenidoRutasXML();
+            
             List<Excursionista> listado = new List<Excursionista>();
 
             // Cargar contenido de prueba
@@ -355,7 +420,8 @@ namespace HITO2_IPO_NUEVO
             doc.Load(fichero.Stream);
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
-                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0);
+                Guia guiaAux = null;
+                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
                 var nuevoExcursionista = new Excursionista("", "", "", "", "", DateTime.Today, "", 1, true, listadoRutas, listadoRutas);
                 nuevoExcursionista.User = node.Attributes["User"].Value;
                 nuevoExcursionista.Pass = node.Attributes["Pass"].Value;
@@ -409,18 +475,20 @@ namespace HITO2_IPO_NUEVO
             tb_edad.Text =  "";
             tb_telefonoexcursionista.Text = "";
             tb_correoexcursionista.Text = "";
+            img_excursionista.Source = new BitmapImage();
+
             bt_anadirExcursionista.IsEnabled = true;
             bt_editarExcursionista.IsEnabled = false;
             bt_eliminarExcursionista.IsEnabled = false;
             lb_rutasrealplaExcursionista.Items.Clear();
 
-            //quedaría deshabilitar boton GUARDAR CUANDO LO CREEN (SE ACTIVARÁ SÓLO CUANDO E PULSE AÑADIR O EDITAR)
+            bt_guardarExcursionista.IsEnabled = false;
         }
 
         private void rellenaCasillasExcursionista(object sender, SelectionChangedEventArgs e)
         {
 
-            if (ListBoxExcursionistas.SelectedIndex > -1)
+            if (ListBoxExcursionistas.SelectedItem != null)
             {
 
                 lb_rutasrealplaExcursionista.Items.Clear();
@@ -438,6 +506,20 @@ namespace HITO2_IPO_NUEVO
                 {
                     cb_ofertas.IsChecked = true;
                 }
+                else
+                {
+                    cb_ofertas.IsChecked = false;
+                }
+                if (excursionistaAux.ImgUrl != null)
+                {
+                    var fullFilePath = excursionistaAux.ImgUrl.ToString();
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                    bitmap.EndInit();
+                    img_excursionista.Source = bitmap;
+                }
+                    
 
                 bt_anadirExcursionista.IsEnabled = false;
                 bt_editarExcursionista.IsEnabled = true;
@@ -446,6 +528,14 @@ namespace HITO2_IPO_NUEVO
             else 
             {
                 inicializaComponenentesExcursionistas();
+            }
+        }
+
+        private void lstExcursionistas_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                ListBoxExcursionistas.SelectedItem = null;
             }
         }
 
@@ -502,6 +592,7 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreGuias()
         {
+            ListBoxGuias.Items.Clear();
             foreach (Guia guia in listadoGuias)
             {
                 ListBoxGuias.Items.Add(guia.Name);
@@ -511,7 +602,7 @@ namespace HITO2_IPO_NUEVO
 
         private List<Guia> CargarContenidoGuiasXML()
         {
-            listadoRutas = CargarContenidoRutasXML();
+
             List<Guia> listado = new List<Guia>();
 
             // Cargar contenido de prueba
@@ -520,7 +611,8 @@ namespace HITO2_IPO_NUEVO
             doc.Load(fichero.Stream);
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
-                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0);
+                Guia guiaAux = null;
+                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
                 var nuevoGuia = new Guia("", "", "", "", "", DateTime.Today, "", "", "", listadoRutas, listadoRutas);
                 nuevoGuia.User = node.Attributes["User"].Value;
                 nuevoGuia.Pass = node.Attributes["Pass"].Value;
@@ -575,18 +667,19 @@ namespace HITO2_IPO_NUEVO
             tb_idiomas.Text = "";
             tb_correoguia.Text = "";
             tb_disponibilidad.Text = "";
+            img_guia.Source = new BitmapImage();
 
             bt_anadirGuia.IsEnabled = true;
             bt_editarGuia.IsEnabled = false;
             bt_eliminarGuia.IsEnabled = false;
             lb_rutasrealplaGuias.Items.Clear();
 
-            //quedaría deshabilitar boton GUARDAR CUANDO LO CREEN (SE ACTIVARÁ SÓLO CUANDO E PULSE AÑADIR O EDITAR)
+            bt_guardarGuia.IsEnabled = false;
         }
 
         private void rellenaCasillasGuias(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxGuias.SelectedIndex > -1)
+            if (ListBoxGuias.SelectedItem != null)
             {
                 lb_rutasrealplaGuias.Items.Clear();
                 cb_rutasGuias.IsEnabled = true;
@@ -600,15 +693,34 @@ namespace HITO2_IPO_NUEVO
                 tb_correoguia.Text = guiaAux.Email;
                 tb_disponibilidad.Text = guiaAux.Disponibilidad;
 
+                if (guiaAux.ImgUrl != null)
+                {
+                    var fullFilePath = guiaAux.ImgUrl.ToString();
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                    bitmap.EndInit();
+                    img_guia.Source = bitmap;
+                }
+                    
                 bt_anadirGuia.IsEnabled = false;
                 bt_editarGuia.IsEnabled = true;
                 bt_eliminarGuia.IsEnabled = true;
+                
             }
             else
             {
                 inicializaComponenentesGuias();
             }
 
+        }
+
+        private void lstGuias_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                ListBoxGuias.SelectedItem = null;
+            }
         }
 
 
@@ -630,8 +742,22 @@ namespace HITO2_IPO_NUEVO
         {
             lb_rutasrealplaGuias.Items.Clear();
             int index = ListBoxGuias.SelectedIndex;
-            var guiaAux = listadoGuias[index];
-
+            Guia guiaAux = null;
+            if (index != -1)
+            {
+                guiaAux = listadoGuias[index];
+            }
+            else
+            {
+                for (int i = 0; i < listadoGuias.Count; i++)
+                {
+                    if (listadoGuias[i].Name == tb_nombre_guia.Text)
+                    {
+                        guiaAux = listadoGuias[i];
+                    }
+                }
+            }
+            
             foreach (Ruta ruta in guiaAux.RutasRealizadas)
             {
                 lb_rutasrealplaGuias.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
@@ -642,7 +768,21 @@ namespace HITO2_IPO_NUEVO
         {
             lb_rutasrealplaGuias.Items.Clear();
             int index = ListBoxGuias.SelectedIndex;
-            var guiaAux = listadoGuias[index];
+            Guia guiaAux = null;
+            if (index != -1)
+            {
+                guiaAux = listadoGuias[index];
+            }
+            else
+            {
+                for (int i = 0; i < listadoGuias.Count; i++)
+                {
+                    if (listadoGuias[i].Name == tb_nombre_guia.Text)
+                    {
+                        guiaAux = listadoGuias[i];
+                    }
+                }
+            }
 
             foreach (Ruta ruta in guiaAux.RutasFuturas)
             {
@@ -653,6 +793,7 @@ namespace HITO2_IPO_NUEVO
         private void click_añadir_Guia(object sender, RoutedEventArgs e)
         {
             inicializaComponenentesGuias();
+            bt_guardarGuia.IsEnabled = true;
         }
 
 
@@ -670,6 +811,7 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreOfertas()
         {
+            ListBoxOfertas.Items.Clear();
             foreach (Oferta oferta in listadoOfertas)
             {
                 ListBoxOfertas.Items.Add(oferta.Id);
@@ -678,7 +820,7 @@ namespace HITO2_IPO_NUEVO
 
         private List<Oferta> CargarContenidoOfertasXML()
         {
-            listadoRutas = CargarContenidoRutasXML();
+
             List<Oferta> listado = new List<Oferta>();
 
             // Cargar contenido de prueba
@@ -687,7 +829,8 @@ namespace HITO2_IPO_NUEVO
             doc.Load(fichero.Stream);
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
-                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0);
+                Guia guiaAux = null;
+                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
                 var nuevaOferta = new Oferta(0, rutaAux, "");
                 nuevaOferta.Id = int.Parse(node.Attributes["Id"].Value);
                 nuevaOferta.Descripcion = node.Attributes["Descripcion"].Value;
@@ -715,12 +858,12 @@ namespace HITO2_IPO_NUEVO
             bt_editarOferta.IsEnabled = false;
             bt_eliminarOferta.IsEnabled = false;
 
-            //quedaría deshabilitar boton GUARDAR CUANDO LO CREEN (SE ACTIVARÁ SÓLO CUANDO E PULSE AÑADIR O EDITAR)
+            bt_guardarOferta.IsEnabled = false;
         }
 
         private void rellenaCasillasOferta(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxOfertas.SelectedIndex > -1)
+            if (ListBoxOfertas.SelectedItem != null)
             {
                
                 int index = ListBoxOfertas.SelectedIndex;
@@ -730,13 +873,16 @@ namespace HITO2_IPO_NUEVO
                 tb_rutaOferta.Text = ofertaAux.Ruta.Nombre;
                 tb_descricpcionoferta.Text = ofertaAux.Descripcion;
 
-
-                var fullFilePath = ofertaAux.IMG_OFERTA.ToString();
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-                bitmap.EndInit();
-                img_oferta.Source = bitmap;
+                if (ofertaAux.IMG_OFERTA != null)
+                {
+                    var fullFilePath = ofertaAux.IMG_OFERTA.ToString();
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                    bitmap.EndInit();
+                    img_oferta.Source = bitmap;
+                }
+                    
 
                 bt_anadirOferta.IsEnabled = false;
                 bt_editarOferta.IsEnabled = true;
@@ -748,7 +894,13 @@ namespace HITO2_IPO_NUEVO
             }
 
         }
-
+        private void lstOfertas_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                ListBoxOfertas.SelectedItem = null;
+            }
+        }
 
 
 
@@ -767,7 +919,6 @@ namespace HITO2_IPO_NUEVO
         private List<PuntoInteres> CargarContenidoPuntosInteresXML()
         {
 
-            listadoRutas = CargarContenidoRutasXML();
 
             List<PuntoInteres> listado = new List<PuntoInteres>();
             // Cargar contenido de prueba
@@ -777,7 +928,8 @@ namespace HITO2_IPO_NUEVO
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
                 //Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones)
-                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0);
+                Guia guiaAux = null;
+                var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
 
                 var nuevoPuntoInteres = new PuntoInteres("", "", rutaAux);
                 nuevoPuntoInteres.Nombre = node.Attributes["Nombre"].Value;
@@ -820,11 +972,13 @@ namespace HITO2_IPO_NUEVO
             bt_editarPdi.IsEnabled = false;
             bt_eliminarPDI.IsEnabled = false;
 
+            bt_guardarPDI.IsEnabled = false;
+
         }
 
         private void rellenaCasillasPuntoInteres(object sender, SelectionChangedEventArgs e)
         {
-            if (ListBoxPDI.SelectedIndex > -1)
+            if (ListBoxPDI.SelectedItem != null)
             {
                 int index = ListBoxPDI.SelectedIndex;
                 
@@ -834,12 +988,17 @@ namespace HITO2_IPO_NUEVO
                     {
                         lb_nombre_pdi.Content = "Ruta: " + puntoInteres.Nombre;
                         tb_descricpcionpdi.Text = puntoInteres.Descripcion;
-                        var fullFilePath = puntoInteres.URL_IMAGEN.ToString();
-                        BitmapImage bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-                        bitmap.EndInit();
-                        img_pdi.Source = bitmap;
+
+
+                        if (puntoInteres.URL_IMAGEN != null)
+                        {
+                            var fullFilePath = puntoInteres.URL_IMAGEN.ToString();
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
+                            bitmap.EndInit();
+                            img_pdi.Source = bitmap;
+                        }       
 
                     }
 
@@ -856,7 +1015,15 @@ namespace HITO2_IPO_NUEVO
             }
         }
 
-        
+        private void lstPuntosInteres_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                ListBoxPDI.SelectedItem = null;
+            }
+        }
+
+
     }
 }
     

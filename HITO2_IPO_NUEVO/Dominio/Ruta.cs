@@ -17,10 +17,11 @@ namespace HITO2_IPO_NUEVO
         public int PlazasDisponibles { set; get; }
         public String MaterialNecesario { set; get; }
         public int NumeroDeRealizaciones { set; get; }
+        public Guia Guia { set; get; }
         public Uri URL_RUTA { set; get; }
         //public Uri URL_INTERES { set; get; }
 
-        public Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones)
+        public Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones,Guia guia)
         {
             Nombre = nombre;
             Origen = origen;
@@ -31,6 +32,7 @@ namespace HITO2_IPO_NUEVO
             PlazasDisponibles = plazasDisponibles;
             MaterialNecesario = material;
             NumeroDeRealizaciones = numRealizaciones;
+            Guia Guia = guia;
 
         }
     }
