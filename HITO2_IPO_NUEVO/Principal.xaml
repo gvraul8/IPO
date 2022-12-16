@@ -322,7 +322,7 @@
                             <RowDefinition Height="0.025*"/>
                         </Grid.RowDefinitions>
 
-                        <ListBox x:Name="ListBoxGuias" SelectionChanged="rellenaCasillasGuias" SelectionMode="Single" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2"/>
+                        <ListBox x:Name="ListBoxGuias" SelectionChanged="rellenaCasillasGuias" SelectionMode="Single" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" PreviewMouseLeftButtonDown="lstGuias_SelectionChanged"/>
 
                         <GroupBox x:Name="gb_guias" Grid.Column="3" Background="White" Grid.Row="3" >
                             <Grid Height="Auto" Width="Auto">
@@ -393,7 +393,7 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_anadirGuia" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" >
+                            <Button x:Name ="bt_anadirGuia" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" Click="click_añadir_Guia" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/add.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Añadir"/></TextBlock>
@@ -448,7 +448,7 @@
 
                         </GroupBox>
 
-                        <Button x:Name ="bt_guardarGuia" Height="31" Grid.Row="4" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="39,215,384,0" Grid.Column="3" >
+                        <Button x:Name ="bt_guardarGuia" Height="33" Grid.Row="4" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="39,215,384,0" Grid.Column="3" Click="clickGuardarGuia" >
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/Imagenes/save.png" Width="15" />
                                 <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Guardar"/></TextBlock>
@@ -513,7 +513,7 @@
                                     <RowDefinition Height="0.05*"/>
                                 </Grid.RowDefinitions>
 
-                                <Label x:Name="lb_nombre_excursionista" Content="Nombre del excursionista"  FontWeight="Bold" FontSize="20"  Grid.Column="1" Grid.ColumnSpan="4" Height="33" VerticalAlignment="Center" Grid.Row="1"/>
+                                <TextBox x:Name="tb_nombre_excursionista" Text="Nombre del excursionista"  FontWeight="Bold" FontSize="20"  Grid.Column="1" Grid.ColumnSpan="4" Height="33" VerticalAlignment="Center" Grid.Row="1"/>
 
                                 <Grid Grid.Column="1" Grid.Row="2">
                                     <Grid.RowDefinitions>
@@ -564,7 +564,7 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_anadirExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" >
+                            <Button x:Name ="bt_anadirExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" Click="click_añadir_Excursionista" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/add.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Añadir"/></TextBlock>
@@ -618,7 +618,7 @@
 
                         </GroupBox>
 
-                        <Button x:Name ="bt_guardarExcursionista" Height="31" Grid.Row="4" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="40,215,384,0" Grid.Column="5" >
+                        <Button x:Name ="bt_guardarExcursionista" Height="33" Grid.Row="4" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="41,215,384,0" Grid.Column="5" Click="clickGuardarExcursionista" >
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/Imagenes/save.png" Width="15" />
                                 <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Guardar"/></TextBlock>
@@ -710,7 +710,7 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_anadirOferta" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" >
+                            <Button x:Name ="bt_anadirOferta" Height="Auto" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" Click="click_añadir_Oferta" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/add.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Añadir"/></TextBlock>
@@ -734,7 +734,7 @@
                         </Grid>
 
 
-                        <Button x:Name ="bt_guardarOferta" Height="31" Grid.Row="3" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="22,517,384,0" Grid.Column="6" Grid.RowSpan="2" >
+                        <Button x:Name ="bt_guardarOferta" Height="40" Grid.Row="3" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="22,517,384,0" Grid.Column="6" Grid.RowSpan="2" Click="clickGuardarOferta" >
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/Imagenes/save.png" Width="15" />
                                 <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Guardar"/></TextBlock>
@@ -755,7 +755,7 @@
                                     <ColumnDefinition Width="0.75*"/>
                                 </Grid.ColumnDefinitions>
                                 <Image Source="Imagenes/pdi.png" Grid.Column="0"/>
-                                <TextBlock Text="PDIs" HorizontalAlignment="Center" Grid.Column="1"/>
+                                <TextBlock Text="PDIs" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,18,0"/>
                             </Grid>
                         </StackPanel>
                     </TabItem.Header>
@@ -796,7 +796,7 @@
                                     <RowDefinition Height="0.05*"/>
                                 </Grid.RowDefinitions>
 
-                                <Label x:Name="lb_nombre_pdi" Content="Nombre del punto de interés"  FontWeight="Bold" FontSize="20"  Grid.Column="1" Grid.ColumnSpan="4" Height="33" VerticalAlignment="Center" Grid.Row="1"/>
+                                <TextBox x:Name="tb_nombre_pdi" Text="Nombre del punto de interés"  FontWeight="Bold" FontSize="20"  Grid.Column="1" Grid.ColumnSpan="4" Height="33" VerticalAlignment="Center" Grid.Row="1"/>
                                 <TextBlock x:Name="lb_descripcionpuntodeonteres" TextWrapping="Wrap" Text="Descripción" Grid.Row="2" Grid.ColumnSpan="3" Margin="28,27,28,336" Grid.RowSpan="2" />
                                 <TextBox x:Name="tb_descricpcionpdi" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="3" Height="Auto" Width="Auto" Grid.ColumnSpan="3" Margin="28,30,28,25" Grid.RowSpan="2"/>
 
@@ -843,7 +843,7 @@
                             </Button>
 
                         </Grid>
-                        <Button x:Name ="bt_guardarPDI" Height="31" Grid.Row="3" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="39,517,384,0" Grid.Column="3" Grid.RowSpan="2" >
+                        <Button x:Name ="bt_guardarPDI" Height="45" Grid.Row="3" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="151.169590643275" Margin="39,517,384,0" Grid.Column="3" Grid.RowSpan="2" >
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/Imagenes/save.png" Width="15" />
                                 <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Guardar"/></TextBlock>

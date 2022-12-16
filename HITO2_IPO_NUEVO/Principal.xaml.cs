@@ -358,6 +358,7 @@ namespace HITO2_IPO_NUEVO
             
         }
 
+        //FALTA SELECCIONAR GUIA Y PDI PARA ASIGNAR---------------------------------------------------------------------------------------------------
         private void clickGuardarRuta(object sender, RoutedEventArgs e)
         {
             //if (string.IsNullOrEmpty(Textbox1.Text))
@@ -471,7 +472,7 @@ namespace HITO2_IPO_NUEVO
         {
             cb_rutasExcursionistas.IsEnabled = false;
             cb_ofertas.IsEnabled = false;
-            lb_nombre_excursionista.Content = "";
+            tb_nombre_excursionista.Text = "";
             tb_edad.Text =  "";
             tb_telefonoexcursionista.Text = "";
             tb_correoexcursionista.Text = "";
@@ -492,13 +493,13 @@ namespace HITO2_IPO_NUEVO
             {
 
                 lb_rutasrealplaExcursionista.Items.Clear();
-                cb_ofertas.IsEnabled = true;
+                //cb_ofertas.IsEnabled = true;
                 cb_rutasExcursionistas.IsEnabled = true;
 
                 int index = ListBoxExcursionistas.SelectedIndex;
                 var excursionistaAux = listadoExcursionistas[index];
 
-                lb_nombre_excursionista.Content = excursionistaAux.Name;
+                tb_nombre_excursionista.Text = excursionistaAux.Name;
                 tb_edad.Text = excursionistaAux.Edad.ToString();
                 tb_telefonoexcursionista.Text = excursionistaAux.Telefono;
                 tb_correoexcursionista.Text = excursionistaAux.Email;
@@ -576,6 +577,44 @@ namespace HITO2_IPO_NUEVO
                 lb_rutasrealplaExcursionista.Items.Add(ruta.Nombre + " (" + ruta.Fecha + ")");
             }
         }
+
+
+        private void click_añadir_Excursionista(object sender, RoutedEventArgs e)
+        {
+            inicializaComponenentesExcursionistas();
+            bt_guardarExcursionista.IsEnabled = true;
+            cb_ofertas.IsEnabled = true;
+
+        }
+
+        private void clickGuardarExcursionista(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrEmpty(Textbox1.Text))
+            List<Ruta> listaRutasAux = new List<Ruta>();
+            Excursionista excursionistaAux = new Excursionista("", "", "", "", "", DateTime.Today, "", 1, true, listaRutasAux, listaRutasAux);
+            
+            excursionistaAux.Name = tb_nombre_excursionista.Text;
+            excursionistaAux.Edad = int.Parse(tb_edad.Text);
+            excursionistaAux.Telefono = tb_telefonoexcursionista.Text;
+            excursionistaAux.Email = tb_correoexcursionista.Text;
+
+            if (cb_ofertas.IsChecked == true)
+            {
+                excursionistaAux.Notificaciones = true;
+            }
+            else
+            {
+                excursionistaAux.Notificaciones = false;
+            }
+
+            listadoExcursionistas.Add(excursionistaAux);
+            imprimirNombreExcursionistas();
+
+        }
+
+
+
+
 
 
 
@@ -666,6 +705,7 @@ namespace HITO2_IPO_NUEVO
             tb_nombre_guia.Text = "";
             tb_idiomas.Text = "";
             tb_correoguia.Text = "";
+            tb_telefonoguia.Text = "";
             tb_disponibilidad.Text = "";
             img_guia.Source = new BitmapImage();
 
@@ -679,6 +719,7 @@ namespace HITO2_IPO_NUEVO
 
         private void rellenaCasillasGuias(object sender, SelectionChangedEventArgs e)
         {
+
             if (ListBoxGuias.SelectedItem != null)
             {
                 lb_rutasrealplaGuias.Items.Clear();
@@ -796,6 +837,30 @@ namespace HITO2_IPO_NUEVO
             bt_guardarGuia.IsEnabled = true;
         }
 
+        private void clickGuardarGuia(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrEmpty(Textbox1.Text))
+
+            List<Ruta> listaRutasAux = new List<Ruta>();
+            Guia guiaAux = new Guia("", "", "", "", "", DateTime.Today, "", "", "", listaRutasAux, listaRutasAux); 
+
+
+            guiaAux.Name = tb_nombre_guia.Text;
+            guiaAux.Idiomas = tb_idiomas.Text;
+            guiaAux.Telefono = tb_telefonoguia.Text;
+            guiaAux.Email = tb_correoguia.Text;
+            guiaAux.Disponibilidad = tb_disponibilidad.Text;
+
+            listadoGuias.Add(guiaAux);
+            imprimirNombreGuias();
+
+        }
+
+
+
+
+
+
 
 
 
@@ -902,6 +967,55 @@ namespace HITO2_IPO_NUEVO
             }
         }
 
+        private void click_añadir_Oferta(object sender, RoutedEventArgs e)
+        {
+            inicializaComponenentesOfertas();
+            bt_guardarOferta.IsEnabled = true;
+        }
+
+
+        //FALTA SELECCIONAR RUTA PARA ASIGNAR---------------------------------------------------------------------------------------------------
+        private void clickGuardarOferta(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrEmpty(Textbox1.Text))
+
+            Ruta rutaAux = null;
+            Oferta ofertaAux = new Oferta(0, rutaAux, "");
+
+            ofertaAux.Id = int.Parse(tb_nombre_oferta.Text);
+            ofertaAux.Descripcion = tb_descricpcionoferta.Text;
+            //ofertaAux.Ruta = extraeRutaParaOferta();
+
+            foreach (Ruta rutaAuxx in listadoRutas)
+            {
+                if (rutaAuxx.Nombre == tb_rutaOferta.Text)
+                {
+                    ofertaAux.Ruta = rutaAuxx;
+                }
+            }
+
+            listadoOfertas.Add(ofertaAux);
+            imprimirNombreOfertas();
+
+        }
+
+
+        private Ruta extraeRutaParaOferta()
+        {
+            tcPestanas.SelectedIndex = 0;
+            Guia guiaAux = null;
+            var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
+            ListBoxRutas.SelectedIndex = -1;
+            while (ListBoxRutas.SelectedIndex == -1) ;
+            rutaAux.Nombre = tb_nombre.Text;
+            rutaAux.Origen = tb_origen.Text;
+            rutaAux.Destino = tb_destino.Text;
+            rutaAux.Provincia = tb_provincia.Text;
+            rutaAux.Dificultad = tb_dificultad.Text;
+            rutaAux.PlazasDisponibles = int.Parse(tb_plazas.Text);
+            rutaAux.Fecha = Convert.ToDateTime(dp_fecha.Text);
+            return rutaAux;
+        }
 
 
 
@@ -962,6 +1076,19 @@ namespace HITO2_IPO_NUEVO
             }
         }
 
+        private void imprimirTodosNombrePuntosInteres()
+        {
+            ListBoxPDI.Items.Clear();
+
+            foreach (PuntoInteres puntoInteres in listadoPuntosInteres)
+            {
+               
+                    ListBoxPDI.Items.Add(puntoInteres.Nombre);
+                
+
+            }
+        }
+
         private void inicializaComponenentesPuntosInteres()
         {
             lb_nombre_pdi.Content = "";
@@ -986,7 +1113,7 @@ namespace HITO2_IPO_NUEVO
                 {
                     if (puntoInteres.Nombre == ListBoxPDI.SelectedItem.ToString())
                     {
-                        lb_nombre_pdi.Content = "Ruta: " + puntoInteres.Nombre;
+                        lb_nombre_pdi.Content = puntoInteres.Nombre;
                         tb_descricpcionpdi.Text = puntoInteres.Descripcion;
 
 
@@ -1023,6 +1150,38 @@ namespace HITO2_IPO_NUEVO
             }
         }
 
+        private void click_añadir_PDI(object sender, RoutedEventArgs e)
+        {
+            inicializaComponenentesPuntosInteres();
+            bt_guardarPDI.IsEnabled = true;
+        }
+
+
+        
+        private void clickGuardarPDI(object sender, RoutedEventArgs e)
+        {
+            //if (string.IsNullOrEmpty(Textbox1.Text))
+
+            Ruta rutaAux = null;
+            PuntoInteres puntoInteresAux = new PuntoInteres("","", rutaAux);
+
+
+            puntoInteresAux.Nombre = tb_nombre_pdi.Text;
+            puntoInteresAux.Descripcion = tb_descricpcionpdi.Text;
+            
+
+            foreach (Ruta rutaAuxx in listadoRutas)
+            {
+                //if (rutaAuxx.Nombre == FALTA ESTE TEXTBOX.Text)
+                //{
+                //  puntoInteresAux.Ruta = rutaAuxx;
+                //}
+            }
+
+            listadoPuntosInteres.Add(puntoInteresAux);
+            imprimirTodosNombrePuntosInteres();
+
+        }
 
     }
 }
