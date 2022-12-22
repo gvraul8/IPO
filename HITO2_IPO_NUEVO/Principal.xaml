@@ -170,7 +170,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock x:Name="lb_origen" TextWrapping="Wrap" Text="Origen" Grid.Row="0"  Grid.Column="0" Grid.RowSpan="2" />
-                                    <TextBox x:Name="tb_origen" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="1" VerticalAlignment="Top" Grid.Column="0" KeyDown="tb_origen_KeyDown"/>
+                                    <TextBox x:Name="tb_origen" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="1" VerticalAlignment="Top" Grid.Column="0" KeyDown="tb_origen_KeyDown" PreviewTextInput="compruebaValidezCasillasGuia"/>
                                     <Image x:Name="img_tb_origen" Grid.Column="1" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="2,0,0,0" Grid.RowSpan="1" Grid.Row="1"/>
 
 
@@ -236,7 +236,7 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_anadir" Height="Auto" Grid.Row="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="151" MaxHeight="60" MaxWidth="120" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="30,0,0,0" Click="bt_anadir_Click"  >
+                            <Button x:Name ="bt_anadir" Height="Auto" Grid.Row="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="151" MaxHeight="60" MaxWidth="120" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="30,0,0,0" Click="click_añadir_Ruta"  >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/add.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Añadir"/></TextBlock>
@@ -262,6 +262,8 @@
 
 
                         <Grid Grid.Row="5" Grid.Column="2" RenderTransformOrigin="0.513,0.609" Grid.ColumnSpan="3" Margin="57,22,57,9" Grid.RowSpan="2">
+
+
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.25*"/>
                                 <ColumnDefinition Width="0.05*"/>
@@ -276,7 +278,11 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_guardarRuta" Height="30" Grid.Row="1"  Grid.Column="0" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="Auto" >
+                            <Image x:Name="img_bt_guia" Grid.Column="2" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="69,-30,0,0" RenderTransformOrigin="-3.345,-0.236"/>
+                            <Image x:Name="img_bt_pdis" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="85,-30,0,0" Grid.Column="4"/>
+
+
+                            <Button x:Name ="bt_guardarRuta" Height="30" Grid.Row="1"  Grid.Column="0" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="Auto" Click="clickGuardarRuta" >
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Image Source="/Imagenes/save.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Guardar"/></TextBlock>
@@ -451,21 +457,21 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name ="bt_anadirGuia" Height="Auto" Grid.Row="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="151" MaxHeight="60" MaxWidth="120" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="30,0,0,0" >
+                            <Button x:Name ="bt_anadirGuia" Height="Auto" Grid.Row="1" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="151" MaxHeight="60" MaxWidth="120" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="30,0,0,0" Click="click_añadir_Guia" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/add.png" Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Añadir"/></TextBlock>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_editarGuia" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_editarGuia" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_editar_guia" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="15" Source="/Imagenes/edit.png"  />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Editar"/></TextBlock>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_eliminarGuia" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_eliminarGuia" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_eliminar_guia" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/delete.png"  Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Eliminar"/></TextBlock>
@@ -491,6 +497,8 @@
                                 <RowDefinition Height="0.70*"/>
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
+
+                            <Image x:Name="img_bt_guardarGuia" Grid.Column="2" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="85,-26,0,0"/>
 
                             <Button x:Name ="bt_guardarGuia" Height="30" Grid.Row="1"  Grid.Column="1" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Click="clickGuardarGuia" Margin="34,1,0,0" Grid.ColumnSpan="2" >
                                 <StackPanel Orientation="Horizontal">
@@ -568,6 +576,8 @@
                                         <RowDefinition Height="0.05*"/>
                                     </Grid.RowDefinitions>
 
+                                    <Image x:Name="img_tb_edadExcursionista" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="225,33,0,0" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"/>
+
                                     <Viewbox Grid.Column="1" Grid.ColumnSpan="4" Height="Auto" VerticalAlignment="Center" Grid.Row="1">
                                         <TextBox x:Name="tb_nombre_excursionista" Text="Nombre del excursionista"  FontWeight="Bold" FontSize="24" BorderBrush="Transparent"/>
                                     </Viewbox>
@@ -587,7 +597,7 @@
 
 
                                         <TextBlock x:Name="lb_edad" TextWrapping="Wrap" Text="Edad" Grid.Row="0" Grid.ColumnSpan="2"  Grid.RowSpan="2" />
-                                        <TextBox x:Name="tb_edad" IsReadOnly="True" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+                                        <TextBox x:Name="tb_edad" IsReadOnly="True" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" PreviewTextInput="NumericOnlyEdadExcursionista" />
 
                                         <TextBlock x:Name="lb_telefonoexcursionista" TextWrapping="Wrap" Text="Teléfono" Grid.Row="2" Grid.ColumnSpan="2" />
                                         <TextBox x:Name="tb_telefonoexcursionista" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
@@ -626,7 +636,7 @@
                                         <TextBlock x:Name="lb_historialEx" TextWrapping="Wrap" Text="HISTORIAL DE RUTAS"  FontWeight="Bold" TextAlignment="Center"/>
                                     </Viewbox>
 
-                                    <ComboBox x:Name="cb_rutasEx" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="169" SelectionChanged="ComboBoxRutasGuias_SelectionChanged" RenderTransformOrigin="0.488,1.369" >
+                                    <ComboBox x:Name="cb_rutasEx" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="169" SelectionChanged="ComboBoxRutasExcursionistas_SelectionChanged" RenderTransformOrigin="0.488,1.369" >
                                         <ComboBoxItem Content="Rutas Planificadas"/>
                                         <ComboBoxItem Content="Rutas Realizadas"/>
                                     </ComboBox>
@@ -660,14 +670,14 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_editarExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_editarExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_editar_excursionista" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="15" Source="/Imagenes/edit.png"  />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Editar"/></TextBlock>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_eliminarExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_eliminarExcursionista" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_eliminar_excursionista" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/delete.png"  Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Eliminar"/></TextBlock>
@@ -694,6 +704,8 @@
                                 <RowDefinition Height="0.70*"/>
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
+
+                            <Image x:Name="img_bt_guardarExcursionista" Grid.Column="2" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="85,-26,0,0"/>
 
                             <Button x:Name ="bt_guardarEx" Height="Auto" Grid.Row="1"  Grid.Column="2" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="158" Click="clickGuardarExcursionista" >
                                 <StackPanel Orientation="Horizontal">
