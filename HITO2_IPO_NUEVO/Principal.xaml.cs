@@ -59,6 +59,14 @@ namespace HITO2_IPO_NUEVO
             imprimirNombreGuias();
             inicializaComponenentesGuias();
 
+            var random = new Random();
+            foreach (Ruta rutaAux in listadoRutas)
+            {
+                
+                int aleatorio = random.Next(0, listadoGuias.Count);
+                rutaAux.Guia = listadoGuias[aleatorio];
+            }
+
             listadoOfertas = CargarContenidoOfertasXML();
             imprimirNombreOfertas();
             inicializaComponenentesOfertas();
@@ -102,65 +110,7 @@ namespace HITO2_IPO_NUEVO
         /// ----------------------------  PESTAÑA RUTAS 
         ///////////////////////////////////////////////////////////////////////////
 
-        private void InsertarRutaEnXML(List<Ruta> listadoAux)
-        {
-            XmlDocument doc = new XmlDocument();
-            XmlNode cabecera = doc.CreateElement("Rutas");
-            doc.AppendChild(cabecera);
-            doc.InsertBefore(doc.CreateXmlDeclaration("1.0","UTF-8",null), cabecera);
-           
-            XmlNode rutaInsertar = doc.CreateElement("Ruta");
-
-            foreach (Ruta rutaAux in listadoAux)
-            {
-                rutaInsertar = doc.CreateElement("Ruta");
-
-                XmlAttribute nombre = doc.CreateAttribute("Nombre");
-                nombre.Value = rutaAux.Nombre;
-                rutaInsertar.Attributes.Append(nombre);
-
-                XmlAttribute origen = doc.CreateAttribute("Origen");
-                origen.Value = rutaAux.Origen;
-                rutaInsertar.Attributes.Append(origen);
-
-                XmlAttribute destino = doc.CreateAttribute("Destino");
-                destino.Value = rutaAux.Destino;
-                rutaInsertar.Attributes.Append(destino);
-
-                XmlAttribute provincia = doc.CreateAttribute("Provincia");
-                provincia.Value = rutaAux.Provincia;
-                rutaInsertar.Attributes.Append(provincia);
-
-                XmlAttribute fecha = doc.CreateAttribute("Fecha");
-                fecha.Value = rutaAux.Fecha.ToString();
-                rutaInsertar.Attributes.Append(fecha);
-
-                XmlAttribute dificultad = doc.CreateAttribute("Dificultad");
-                dificultad.Value = rutaAux.Dificultad;
-                rutaInsertar.Attributes.Append(dificultad);
-
-                XmlAttribute plazasDisponibles = doc.CreateAttribute("PlazasDisponibles");
-                plazasDisponibles.Value = rutaAux.PlazasDisponibles.ToString();
-                rutaInsertar.Attributes.Append(plazasDisponibles);
-
-                XmlAttribute materialNecesario = doc.CreateAttribute("MaterialNecesario");
-                materialNecesario.Value = rutaAux.MaterialNecesario;
-                rutaInsertar.Attributes.Append(materialNecesario);
-
-                XmlAttribute numeroRealizaciones = doc.CreateAttribute("NumeroDeRealizaciones");
-                numeroRealizaciones.Value = rutaAux.NumeroDeRealizaciones.ToString();
-                rutaInsertar.Attributes.Append(numeroRealizaciones);
-
-                XmlAttribute url_Ruta = doc.CreateAttribute("URL_RUTA");
-                url_Ruta.Value = rutaAux.URL_RUTA.ToString();
-                rutaInsertar.Attributes.Append(url_Ruta);
-
-                cabecera.AppendChild(rutaInsertar);
-            }
-            
-            doc.Save("rutas2.xml");
-            //doc.Save("Datos/rutas.xml");
-        }
+        
 
         private void bt_editars_Click(object sender, RoutedEventArgs e)
         {
@@ -212,8 +162,11 @@ namespace HITO2_IPO_NUEVO
             //var fichero = Application.GetResourceStream(new Uri("bin/Debug/rutas.xml", UriKind.Relative));
 
             doc.Load(fichero.Stream);
+
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
+                
+
                 Guia guiaAux = null;
                 //Ruta(string nombre, string origen, string destino, string provincia, DateTime fecha, string dificultad, int plazasDisponibles, string material, int numRealizaciones)
                 var nuevaRuta = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
@@ -227,13 +180,7 @@ namespace HITO2_IPO_NUEVO
                 nuevaRuta.MaterialNecesario = node.Attributes["MaterialNecesario"].Value;
                 nuevaRuta.NumeroDeRealizaciones = Convert.ToInt32(node.Attributes["NumeroDeRealizaciones"].Value);
                 nuevaRuta.URL_RUTA = new Uri(node.Attributes["URL_RUTA"].Value, UriKind.Absolute);
-                for (int i = 0; i < listadoGuias.Count; i++)
-                {
-                    if (listadoGuias[i].Name == node.Attributes["Guia"].Value)
-                    {
-                        nuevaRuta.Guia = listadoGuias[i];
-                    }
-                }
+                //nuevaRuta.Guia = listadoGuias[aleatorio];
                 //nuevaRuta.URL_INTERES = new Uri(node.Attributes["URL_INTERES"].Value, UriKind.Absolute);
                 listado.Add(nuevaRuta);
             }
@@ -606,12 +553,28 @@ namespace HITO2_IPO_NUEVO
             img_bt_asignarGuia.Visibility = Visibility.Hidden;
 
             img_bt_guardarGuia.Visibility = Visibility.Hidden;
-
+            
             tcPestanas.SelectedIndex = 1;
-            tiRutas.IsEnabled = false;
-            tiGuia.IsEnabled = false;
-            tiExcursionista.IsEnabled = false;
-            tiOfertas.IsEnabled = false;
+            if (bt_verGuiaRuta.Content == "Seleccionar guia") {
+                tiRutas.IsEnabled = false;
+                tiGuia.IsEnabled = false;
+                tiExcursionista.IsEnabled = false;
+                tiOfertas.IsEnabled = false;
+            }
+            else
+            {
+                int posicionRuta = buscaRuta(tb_nombre.Text);
+                int contador = 0;
+
+                foreach(Guia guiaAux in listadoGuias)
+                {
+                    if (guiaAux == listadoRutas[posicionRuta].Guia)
+                    {
+                        ListBoxGuias.SelectedIndex = contador;
+                    }
+                    contador++;
+                }
+            }
         }
 
         private void click_eliminar_ruta(object sender, RoutedEventArgs e)
@@ -1096,6 +1059,7 @@ namespace HITO2_IPO_NUEVO
 
                 listado.Add(nuevoGuia);
             }
+
             return listado;
         }
 
