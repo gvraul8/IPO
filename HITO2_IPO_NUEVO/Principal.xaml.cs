@@ -264,6 +264,43 @@ namespace HITO2_IPO_NUEVO
             img_bt_guia.Visibility = Visibility.Hidden;
             img_bt_pdis.Visibility = Visibility.Hidden;
 
+            cb_elegirExcursionista.IsEnabled = false;
+            cb_elegirExcursionista.SelectedIndex = -1;
+            list_excursionistas.Items.Clear();
+
+            img_bt_guardarRuta.Visibility = Visibility.Hidden;
+
+            img_tb_plazas.Visibility = Visibility.Hidden;
+
+        }
+
+        private void cambiaModoCasillasRuta(bool soloLectura)
+        {
+            if (tb_nombre.Text == String.Empty) //evita que se edite el nombre de la ruta existente
+            {
+                tb_nombre.IsReadOnly = soloLectura;
+            }
+
+            tb_origen.IsReadOnly = soloLectura;
+            tb_destino.IsReadOnly = soloLectura;
+            tb_provincia.IsReadOnly = soloLectura;
+            tb_dificultad.IsReadOnly = soloLectura;
+            tb_plazas.IsReadOnly = soloLectura;
+            dp_fecha.IsEnabled = !soloLectura;
+
+            if (!soloLectura)
+            {
+                if (tb_nombre.Text == String.Empty)
+                {
+                    tb_nombre.Text = "Escriba aqui el nombre de la nueva ruta";
+                    bt_verGuiaRuta.Content = "Seleccionar guia";
+                    bt_consultarPDis.Content = "Añadir PDI";
+                    bt_verGuiaRuta.IsEnabled = true;
+                    bt_consultarPDis.IsEnabled = true;
+
+                }
+
+            }
         }
 
         private void rellenaCasillasRuta(object sender, SelectionChangedEventArgs e)
@@ -306,10 +343,34 @@ namespace HITO2_IPO_NUEVO
                 img_bt_guia.Visibility = Visibility.Hidden;
                 img_bt_pdis.Visibility = Visibility.Hidden;
 
+                cb_elegirExcursionista.IsEnabled = true;
+                cb_elegirExcursionista.SelectedIndex = -1;
+                list_excursionistas.Items.Clear();
+
+                img_bt_guardarRuta.Visibility = Visibility.Hidden;
+
+                tiRutas.IsEnabled = true;
+                tiGuia.IsEnabled = true;
+                tiExcursionista.IsEnabled = true;
+                tiOfertas.IsEnabled = true;
+
+                inicializaComponenentesPuntosInteres();
+
+                img_tb_plazas.Visibility = Visibility.Hidden;
             }
             else
             {
                 inicializaComponentesRutas();
+                List<PuntoInteres> listaAux = new List<PuntoInteres>(listadoPuntosInteres);
+                
+                foreach (PuntoInteres puntoAux in listadoPuntosInteres)
+                {
+                    if (buscaRuta(puntoAux.Ruta.Nombre) == -1)
+                    {
+                        listaAux.Remove(puntoAux);
+                    }
+                }
+                listadoPuntosInteres = listaAux;
             }
         }
 
@@ -327,60 +388,43 @@ namespace HITO2_IPO_NUEVO
             
             tcPestanas.SelectedIndex = 4;
 
-            int index = ListBoxRutas.SelectedIndex;
-            var rutaAux = listadoRutas[index];
-            imprimirNombrePuntosInteres(rutaAux.Nombre);
-        }
-
-        private void click_consultar_guia_ruta(object sender, RoutedEventArgs e)
-        {
-            tcPestanas.SelectedIndex = 1;
-            lb_rutasrealplaGuias.Items.Clear();
-            cb_rutasGuias.IsEnabled = true;
-
-            int index = ListBoxRutas.SelectedIndex;
-            var rutaElegida = listadoRutas[index];
-            var guiaAux = rutaElegida.Guia;
-
-            tb_nombreguia.Text = guiaAux.Name;
-            tb_idiomas.Text = guiaAux.Idiomas;
-            tb_telefonoguia.Text = guiaAux.Telefono;
-            tb_correoguia.Text = guiaAux.Email;
-            tb_disponibilidad.Text = guiaAux.Disponibilidad;
-
-            var fullFilePath = guiaAux.ImgUrl.ToString();
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(fullFilePath, UriKind.Absolute);
-            bitmap.EndInit();
-            img_guia.Source = bitmap;
-
-            bt_anadirGuia.IsEnabled = false;
-            bt_editarGuia.IsEnabled = true;
-            bt_eliminarGuia.IsEnabled = true;
-
+            int index = buscaRuta(tb_nombre.Text);
+            if (index != -1)
+            {
+                var rutaAux = listadoRutas[index];
+                imprimirNombrePuntosInteres(rutaAux.Nombre);
+            }
+            else if (!rutaTieneAlgunPDI(tb_nombre.Text))
+            {
+                cb_ruta_PDI.Items.Add(tb_nombre.Text);
+                tiRutas.IsEnabled = false;
+                tiGuia.IsEnabled = false;
+                tiExcursionista.IsEnabled = false;
+                tiOfertas.IsEnabled = false;
+            }
+               
+            
         }
 
         private void click_añadir_Ruta(object sender, RoutedEventArgs e)
         {
             inicializaComponentesRutas();
-            edicionTextBox(false);
+            cambiaModoCasillasRuta(false);
             bt_guardarRuta.IsEnabled = true;
-            img_bt_guia.Source = imagCross;
-            img_bt_guia.Visibility = Visibility.Visible;
-            img_bt_guia.ToolTip = "Añada un guía nuevo a la ruta en creación";
 
-            img_bt_pdis.Source = imagCross;
-            img_bt_pdis.Visibility = Visibility.Visible;
-            img_bt_pdis.ToolTip = "Añada un punto de interés nuevo a la ruta en creación";
+            tiRutas.IsEnabled = false;
+            tiGuia.IsEnabled = false;
+            tiExcursionista.IsEnabled = false;
+            tiOfertas.IsEnabled = false;
+
         }
         
 
-        private Boolean rutaTieneAlgunPDI(Ruta rutaAux)
+        private Boolean rutaTieneAlgunPDI(String nombreRuta)
         {
             foreach(PuntoInteres puntoAux in listadoPuntosInteres)
             {
-                if (puntoAux.Ruta.Nombre == rutaAux.Nombre)
+                if (puntoAux.Ruta.Nombre == nombreRuta)
                 {
                     return true;
                 }
@@ -389,42 +433,210 @@ namespace HITO2_IPO_NUEVO
         }
 
 
-        //FALTA SELECCIONAR GUIA Y PDI PARA ASIGNAR---------------------------------------------------------------------------------------------------
         private void clickGuardarRuta(object sender, RoutedEventArgs e)
         {
-            //if (string.IsNullOrEmpty(Textbox1.Text))
+       
+            if (compruebaValidezCasillasRuta())
+            {
+                rutaNula.Nombre = tb_nombre.Text;
+                rutaNula.Origen = tb_origen.Text;
+                rutaNula.Destino = tb_destino.Text;
+                rutaNula.Provincia = tb_provincia.Text;
+                rutaNula.Dificultad = tb_dificultad.Text;
+                rutaNula.PlazasDisponibles = int.Parse(tb_plazas.Text);
+                rutaNula.Fecha = Convert.ToDateTime(dp_fecha.Text);
 
+                if (rutaNula.Guia != null && rutaTieneAlgunPDI(rutaNula.Nombre))
+                {
+                    img_bt_guardarRuta.Source = imagCheck;
+                    img_bt_guardarRuta.Visibility = Visibility.Visible;
+                    img_bt_guardarRuta.ToolTip = "Todos los datos requeridos han sido aportados";
 
-            rutaNula.Nombre = tb_nombre.Text;
-            rutaNula.Origen = tb_origen.Text;
-            rutaNula.Destino = tb_destino.Text;
-            rutaNula.Provincia = tb_provincia.Text;
-            rutaNula.Dificultad = tb_dificultad.Text;
-            rutaNula.PlazasDisponibles = int.Parse(tb_plazas.Text);
-            rutaNula.Fecha = Convert.ToDateTime(dp_fecha.Text);
-            //tb_material.Text = rutaAux.MaterialNecesario.ToString();
-            //tb_realizaciones.Text = rutaAux.NumeroDeRealizaciones.ToString();
+                    
 
-            //dp_fecha.Text = Convert.ToDateTime(rutaAux.Fecha.ToString()).ToString();
+                    int posicionRuta = buscaRuta(rutaNula.Nombre);
 
-            if (rutaNula.Guia != null || rutaTieneAlgunPDI(rutaNula)){
-                img_tb_plazas.Source = imagCheck;
-                img_tb_plazas.Visibility = Visibility.Visible;
-                img_tb_plazas.ToolTip = "Formato adecuado";
+                    if(posicionRuta != -1)
+                    {
+                        rutaNula.URL_RUTA = listadoRutas[posicionRuta].URL_RUTA;
+                        listadoRutas[posicionRuta] = rutaNula;
+                    }
+                    else {
+                        rutaNula.URL_RUTA = IMAGEN_RUTA_DEFAULT;
+                        listadoRutas.Add(rutaNula);
+                    }
+                    tiRutas.IsEnabled = true;
+                    tiGuia.IsEnabled = true;
+                    tiExcursionista.IsEnabled = true;
+                    tiOfertas.IsEnabled = true;
+
+                    inicializaComponentesRutas();
+                    imprimirNombreRutas();
+
+                }
+                else if (rutaNula.Guia == null && rutaTieneAlgunPDI(rutaNula.Nombre))
+                {
+                    bt_consultarPDis.Content = "Consultar PDIs";
+
+                    img_bt_guia.Source = imagCross;
+                    img_bt_guia.Visibility = Visibility.Visible;
+                    img_bt_guia.ToolTip = "Añada un guía nuevo a la ruta en creación";
+
+                    img_bt_pdis.Source = imagCheck;
+                    img_bt_pdis.Visibility = Visibility.Visible;
+                    img_bt_pdis.ToolTip = "La ruta cuenta con al menos 1 punto de interés";
+
+                }
+                else if (rutaNula.Guia != null && !rutaTieneAlgunPDI(rutaNula.Nombre))
+                {
+                    bt_verGuiaRuta.Content = "Consultar guia";
+                    
+                    img_bt_guia.Source = imagCheck;
+                    img_bt_guia.Visibility = Visibility.Visible;
+                    img_bt_guia.ToolTip = "La ruta ya cuenta con un guía asignado";
+
+                    img_bt_pdis.Source = imagCross;
+                    img_bt_pdis.Visibility = Visibility.Visible;
+                    img_bt_pdis.ToolTip = "Añada al menos un punto de interés nuevo a la ruta en creación";
+
+                }
+                else
+                {
+                    img_bt_guia.Source = imagCross;
+                    img_bt_guia.Visibility = Visibility.Visible;
+                    img_bt_guia.ToolTip = "Añada un guía nuevo a la ruta en creación";
+
+                    img_bt_pdis.Source = imagCross;
+                    img_bt_pdis.Visibility = Visibility.Visible;
+                    img_bt_pdis.ToolTip = "Añada al menos un punto de interés nuevo a la ruta en creación";
+                }
+                
             }
-            listadoRutas.Add(rutaNula);
-            imprimirNombreRutas();
 
         }
 
+        private void cambi_seleccionTipoExcursionistas(object sender, SelectionChangedEventArgs e)
+        {
+            
+            if (cb_elegirExcursionista.SelectedIndex == 0)
+            {
+                imprimeExcursionistasRealizaronRuta(ListBoxRutas.SelectedItem.ToString());
+            }
+            else if (cb_elegirExcursionista.SelectedIndex == 1)
+            {
+                imprimeExcursionistasRalizaranRuta(ListBoxRutas.SelectedItem.ToString());
+            }
+        }
+
+        private void imprimeExcursionistasRealizaronRuta(String nombreRuta)
+        {
+            list_excursionistas.Items.Clear();
+
+            foreach (Excursionista excursionistaAux in listadoExcursionistas)
+            {
+                foreach(Ruta rutaHecha in excursionistaAux.RutasRealizadas)
+                {
+                    if(rutaHecha.Nombre == nombreRuta)
+                    {
+                        list_excursionistas.Items.Add(excursionistaAux.Name);
+                    }
+                }
+            }
+        }
+
+        private void imprimeExcursionistasRalizaranRuta(String nombreRuta)
+        {
+            list_excursionistas.Items.Clear();
+
+            foreach (Excursionista excursionistaAux in listadoExcursionistas)
+            {
+                foreach (Ruta rutaFutura in excursionistaAux.RutasFuturas)
+                {
+                    if (rutaFutura.Nombre == nombreRuta)
+                    {
+                        list_excursionistas.Items.Add(excursionistaAux.Name);
+                    }
+                }
+            }
+        }
+
+        private bool compruebaValidezCasillasRuta()
+        {
+            bool valido = true;
+
+            if (tb_nombre.Text == "" || tb_origen.Text == "" || tb_destino.Text == "" || tb_provincia.Text == "" || tb_dificultad.Text == "" || tb_plazas.Text == "" || dp_fecha.Text == "")
+            {
+                img_bt_guardarRuta.Visibility = Visibility.Visible;
+                img_bt_guardarRuta.Source = imagCross;
+                img_bt_guardarRuta.ToolTip = "Debe rellenar todos los campos de esta pestaña para guardar la nueva ruta";
+                valido = false;
+            }
+            else
+            {
+                img_bt_guardarRuta.Visibility = Visibility.Visible;
+                img_bt_guardarRuta.Source = imagCheck;
+                img_bt_guardarRuta.ToolTip = "Campos de esta pestaña rellenados correctamente";
+
+            }
 
 
+            return valido;
+        }
 
 
+        private int buscaRuta(String nombreRuta)
+        {
+            int posicionRuta = -1;
+            int contador = 0;
 
+            foreach(Ruta rutaAux in listadoRutas)
+            {
+                if (rutaAux.Nombre == nombreRuta)
+                {
+                    posicionRuta = contador;
+                }
+                contador++;
+            }
 
+            return posicionRuta;
+        }
 
+        private void click_consultar_guia(object sender, RoutedEventArgs e)
+        {
+            img_bt_asignarGuia.Visibility = Visibility.Hidden;
 
+            img_bt_guardarGuia.Visibility = Visibility.Hidden;
+
+            tcPestanas.SelectedIndex = 1;
+            tiRutas.IsEnabled = false;
+            tiGuia.IsEnabled = false;
+            tiExcursionista.IsEnabled = false;
+            tiOfertas.IsEnabled = false;
+        }
+
+        private void click_eliminar_ruta(object sender, RoutedEventArgs e)
+        {
+            int posicionRuta = buscaRuta(tb_nombre.Text);
+            listadoRutas.Remove(listadoRutas[posicionRuta]);
+            imprimirNombreRutas();
+            inicializaComponentesRutas();
+            List<PuntoInteres> listaAux = new List<PuntoInteres>(listadoPuntosInteres);
+
+            foreach (PuntoInteres puntoAux in listadoPuntosInteres)
+            {
+                if (buscaRuta(puntoAux.Ruta.Nombre) == -1)
+                {
+                    listaAux.Remove(puntoAux);
+                }
+            }
+            listadoPuntosInteres = listaAux;
+        }
+
+        private void click_editar_ruta(object sender, RoutedEventArgs e)
+        {
+            cambiaModoCasillasRuta(false);
+            bt_guardarRuta.IsEnabled = true;
+        }
 
 
 
@@ -908,6 +1120,10 @@ namespace HITO2_IPO_NUEVO
             img_bt_guardarGuia.Visibility = Visibility.Hidden;
             cambiaModoCasillasGuia(true);
 
+            bt_asignarGuia.IsEnabled = false;
+
+            img_bt_asignarGuia.Visibility = Visibility.Hidden;
+
         }
 
         private void cambiaModoCasillasGuia(bool soloLectura)
@@ -958,6 +1174,13 @@ namespace HITO2_IPO_NUEVO
 
                 img_bt_guardarGuia.Visibility = Visibility.Hidden;
                 cambiaModoCasillasGuia(true);
+
+                img_bt_asignarGuia.Visibility = Visibility.Hidden;
+
+                if (bt_verGuiaRuta.Content == "Seleccionar guia")
+                {
+                    bt_asignarGuia.IsEnabled = true;
+                }
             }
             else
             {
@@ -1164,7 +1387,24 @@ namespace HITO2_IPO_NUEVO
 
         }
 
+        private void click_asignar_guia(object sender, RoutedEventArgs e)
+        {
+            bt_asignarGuia.IsEnabled = false;
 
+            img_bt_asignarGuia.Visibility = Visibility.Visible;
+            img_bt_asignarGuia.Source = imagCheck;
+            img_bt_asignarGuia.ToolTip = "Guía asignado correctamente";
+
+            img_bt_guia.Source = imagCheck;
+            img_bt_guia.Visibility = Visibility.Visible;
+            img_bt_guia.ToolTip = "La ruta ya cuenta con un guía asignado";
+
+            int posicionGuia = buscaGuia(tb_nombreguia.Text);
+            rutaNula.Guia = listadoGuias[posicionGuia];
+
+            tcPestanas.SelectedIndex = 0;
+
+        }
 
 
 
@@ -1439,9 +1679,9 @@ namespace HITO2_IPO_NUEVO
             lb_exc.Items.Clear();
             lb_ofertas.Items.Clear();
 
-            int index = ListBoxRutas.SelectedIndex;
-            var rutaAux = listadoRutas[index];
-            imprimirNombrePuntosInteres(rutaAux.Nombre);
+            cambiaModoCasillasOferta(false);
+            cb_rutaOferta.IsEnabled = true;
+            bt_guardarOferta.IsEnabled = true;
         }
 
 
@@ -1596,13 +1836,44 @@ namespace HITO2_IPO_NUEVO
 
             bt_guardarPDI.IsEnabled = false;
 
+            cb_ruta_PDI.SelectedIndex = -1;
+            cb_ruta_PDI.IsEnabled = false;
+
+            cb_ruta_PDI.Items.Clear();
+            foreach (Ruta rutaAux in listadoRutas)
+            {
+                cb_ruta_PDI.Items.Add(rutaAux.Nombre);
+            }
+
+            cambiaModoCasillasPDIs(true);
+            img_bt_guardarPDI.Visibility = Visibility.Hidden;
+            img_bt_guardarPDI.Visibility = Visibility.Hidden;
+
+            bt_mostrarRuta.IsEnabled = false;
+
+        }
+
+        private void cambiaModoCasillasPDIs(bool soloLectura)
+        {
+            if (tb_nombre_pdi.Text == String.Empty) //evita que se edite el nombre del punto de interes existente
+            {
+                tb_nombre_pdi.IsReadOnly = soloLectura;
+            }
+
+            tb_descripcionpdi.IsReadOnly = soloLectura;
+            cb_ruta_PDI.IsEnabled = !soloLectura;
+
+            if (!soloLectura && tb_nombre_pdi.Text == String.Empty)
+            {
+                tb_nombre_pdi.Text = "Escriba aqui el nombre del nuevo punto";
+            }
         }
 
         private void rellenaCasillasPuntoInteres(object sender, SelectionChangedEventArgs e)
         {
             if (ListBoxPDI.SelectedItem != null)
             {
-                int index = ListBoxPDI.SelectedIndex;
+            
                 foreach (PuntoInteres puntoInteres in listadoPuntosInteres)
                 {
                     if (puntoInteres.Nombre == ListBoxPDI.SelectedItem.ToString())
@@ -1610,6 +1881,24 @@ namespace HITO2_IPO_NUEVO
                         tb_nombre_pdi.Text = puntoInteres.Nombre;
 
                         tb_descripcionpdi.Text = puntoInteres.Descripcion;
+
+                        int contadorRutas = 0;
+                        bool encontrado = false;
+                        foreach (Ruta rutaAux in listadoRutas)
+                        {
+
+                            if (rutaAux.Nombre == tb_nombre.Text)
+                            {
+                                cb_ruta_PDI.SelectedIndex = contadorRutas;
+                                encontrado = true;
+                            }
+                            contadorRutas++;
+                        }
+                        if (!encontrado)
+                        {
+                            cb_ruta_PDI.Items.Add(tb_nombre.Text);
+                            cb_ruta_PDI.SelectedIndex = contadorRutas;
+                        }
 
                         if (puntoInteres.URL_IMAGEN != null)
                         {
@@ -1625,7 +1914,13 @@ namespace HITO2_IPO_NUEVO
                 bt_anadirPdi.IsEnabled = false;
                 bt_editarPdi.IsEnabled = true;
                 bt_eliminarPdi.IsEnabled = true;
-                
+
+                cambiaModoCasillasPDIs(true);
+                img_bt_guardarPDI.Visibility = Visibility.Hidden;
+                img_bt_guardarPDI.Visibility = Visibility.Hidden;
+
+                bt_mostrarRuta.IsEnabled = true;
+
             }
             else
             {
@@ -1645,32 +1940,151 @@ namespace HITO2_IPO_NUEVO
         {
             inicializaComponenentesPuntosInteres();
             bt_guardarPDI.IsEnabled = true;
+            cambiaModoCasillasPDIs(false);
+
+            int contadorRutas = 0;
+            bool encontrado = false;
+
+            foreach (Ruta rutaAux in listadoRutas)
+            {
+                
+                if (rutaAux.Nombre == tb_nombre.Text)
+                {
+                    cb_ruta_PDI.SelectedIndex = contadorRutas;
+                    encontrado = true;
+                }
+                 contadorRutas++;  
+            }
+            if (!encontrado)
+            {
+                cb_ruta_PDI.Items.Add(tb_nombre.Text);
+                cb_ruta_PDI.SelectedIndex = contadorRutas;
+            }
+            cb_ruta_PDI.IsEnabled = false;
         }
 
         private void clickGuardarPDI(object sender, RoutedEventArgs e)
         {
-            //if (string.IsNullOrEmpty(Textbox1.Text))
-
-            Ruta rutaAux = null;
-            PuntoInteres puntoInteresAux = new PuntoInteres("", "", rutaAux);
-
-
-            puntoInteresAux.Nombre = tb_nombre_pdi.Text;
-            puntoInteresAux.Descripcion = tb_descripcionpdi.Text;
-
-
-            foreach (Ruta rutaAuxx in listadoRutas)
+           
+            if (compruebaValidezCasillasPDI())
             {
-                //if (rutaAuxx.Nombre == FALTA ESTE TEXTBOX.Text)
-                //{
-                //  puntoInteresAux.Ruta = rutaAuxx;
-                //}
+                Guia guiaAux = null;
+                Ruta rutaAux = new Ruta(cb_ruta_PDI.SelectedItem.ToString(), "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
+
+                PuntoInteres puntoInteresAux = new PuntoInteres("", "", rutaAux);
+
+
+                puntoInteresAux.Nombre = tb_nombre_pdi.Text;
+                puntoInteresAux.Descripcion = tb_descripcionpdi.Text;
+
+                foreach (Ruta rutaAuxx in listadoRutas)
+                {
+                    if (rutaAuxx.Nombre == cb_ruta_PDI.SelectedItem.ToString())
+                    {
+                        puntoInteresAux.Ruta = rutaAuxx;
+                    }
+                }
+
+                int posicionPDI = buscaPDI(puntoInteresAux.Nombre);
+                
+                if (posicionPDI == -1)
+                {
+                    puntoInteresAux.URL_IMAGEN = IMAGEN_PDI_DEFAULT;
+                    listadoPuntosInteres.Add(puntoInteresAux);
+                    imprimirTodosNombrePuntosInteres();
+                }
+                else
+                {
+                    puntoInteresAux.URL_IMAGEN = listadoPuntosInteres[posicionPDI].URL_IMAGEN;
+                    listadoPuntosInteres[posicionPDI] = puntoInteresAux;
+                }
+                
+                inicializaComponenentesPuntosInteres();
+                imprimirNombrePuntosInteres(tb_nombre.Text);
+
+                if(bt_consultarPDis.Content == "Añadir PDI")
+                {
+                    img_bt_pdis.Source = imagCheck;
+                    img_bt_pdis.Visibility = Visibility.Visible;
+                    img_bt_pdis.ToolTip = "La ruta cuenta con al menos 1 punto de interés";
+                }
+
+               
+            }
+        }
+
+
+        private bool compruebaValidezCasillasPDI()
+        {
+            bool valido = true;
+
+            if (tb_descripcionpdi.Text == "" || tb_nombre_pdi.Text == "" || cb_ruta_PDI.SelectedIndex == -1)
+            {
+                img_bt_guardarPDI.Visibility = Visibility.Visible;
+                img_bt_guardarPDI.Source = imagCross;
+                img_bt_guardarPDI.ToolTip = "Debe rellenar todos los campos de esta pestaña para guardar el nuevo punto de interés";
+                valido = false;
+            }
+            else
+            {
+                img_bt_guardarPDI.Visibility = Visibility.Visible;
+                img_bt_guardarPDI.Source = imagCheck;
+                img_bt_guardarPDI.ToolTip = "Campos de esta pestaña rellenados correctamente";
+
             }
 
-            listadoPuntosInteres.Add(puntoInteresAux);
-            imprimirTodosNombrePuntosInteres();
+
+            return valido;
+        }
+
+        private int buscaPDI(String nombrePDI)
+        {
+            int posicion = -1;
+            int contador = 0;
+            foreach (PuntoInteres puntoInteresAux in listadoPuntosInteres)
+            {
+                if (puntoInteresAux.Nombre == nombrePDI)
+                {
+                    posicion = contador;
+                    
+                }
+                contador++;
+            }
+            return posicion;
 
         }
+
+        private void click_editar_PDI(object sender, RoutedEventArgs e)
+        {
+            bt_guardarPDI.IsEnabled = true;
+            cambiaModoCasillasPDIs(false);
+            cb_ruta_PDI.IsEnabled = true;
+        }
+
+
+        private void click_eliminar_PDI(object sender, RoutedEventArgs e)
+        {
+            int posicionPDI = buscaPDI(tb_nombre_pdi.Text);
+            listadoPuntosInteres.Remove(listadoPuntosInteres[posicionPDI]);
+            imprimirNombrePuntosInteres(cb_ruta_PDI.SelectedItem.ToString());
+            inicializaComponenentesPuntosInteres();
+        }
+
+        private void click_verRuta_PDI(object sender, RoutedEventArgs e)
+        {
+            tcPestanas.SelectedIndex = 0;
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
         //---------------  CONTROL DE ENTRADAS  -------------------------------
@@ -1756,7 +2170,7 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 0;
         }
 
-       
+        
     }
 }
     
