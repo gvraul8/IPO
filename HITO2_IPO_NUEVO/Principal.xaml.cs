@@ -1219,7 +1219,7 @@ namespace HITO2_IPO_NUEVO
         void inicializaComponenentesOfertas()
         {
             tb_nombre_oferta.Text = "";
-            tb_rutaOferta.Text = "";
+            cb_rutaOferta.SelectedIndex = -1;
             tb_descripcionoferta.Text = "";
             img_oferta.Source = new BitmapImage();
 
@@ -1227,7 +1227,41 @@ namespace HITO2_IPO_NUEVO
             bt_editarOferta.IsEnabled = false;
             bt_eliminarOferta.IsEnabled = false;
 
+
             bt_guardarOferta.IsEnabled = false;
+            cb_rutaOferta.IsEnabled = false;
+
+            cb_rutaOferta.Items.Clear();
+            foreach (Ruta rutaAux in listadoRutas)
+            {
+                cb_rutaOferta.Items.Add(rutaAux.Nombre);
+            }
+
+            cambiaModoCasillasOferta(true);
+            img_bt_guardarOferta.Visibility = Visibility.Hidden;
+            img_bt_nombreOferta.Visibility = Visibility.Hidden;
+
+            lb_exc.Items.Clear();
+            lb_ofertas.Items.Clear();
+
+            lb_envio_correcto.Visibility = Visibility.Hidden;
+            bt_enviarOferta.IsEnabled = false;
+        }
+
+        private void cambiaModoCasillasOferta(bool soloLectura)
+        {
+            if (tb_nombre_oferta.Text == String.Empty) //evita que se edite el nombre de la oferta existente
+            {
+                tb_nombre_oferta.IsReadOnly = soloLectura;
+            }
+
+            tb_descripcionoferta.IsReadOnly = soloLectura;
+            cb_rutaOferta.IsEnabled = !soloLectura;
+
+            if (!soloLectura && tb_nombre_oferta.Text == String.Empty)
+            {
+                tb_nombre_oferta.Text = "Escriba aqui el nombre de la nueva oferta";
+            }
         }
 
         private void rellenaCasillasOferta(object sender, SelectionChangedEventArgs e)
@@ -1239,7 +1273,16 @@ namespace HITO2_IPO_NUEVO
                 var ofertaAux = listadoOfertas[index];
 
                 tb_nombre_oferta.Text = ofertaAux.Id.ToString();
-                tb_rutaOferta.Text = ofertaAux.Ruta.Nombre;
+                int contadorRutas = 0;
+                foreach (Ruta rutaAux in listadoRutas)
+                {
+                    if (rutaAux.Nombre == ofertaAux.Ruta.Nombre)
+                    {
+                        cb_rutaOferta.SelectedIndex = contadorRutas;
+                    }
+                    contadorRutas++;
+                }
+                
                 tb_descripcionoferta.Text = ofertaAux.Descripcion;
 
                 if (ofertaAux.IMG_OFERTA != null)
@@ -1255,6 +1298,13 @@ namespace HITO2_IPO_NUEVO
                 bt_anadirOfeta.IsEnabled = false;
                 bt_editarOferta.IsEnabled = true;
                 bt_eliminarOferta.IsEnabled = true;
+
+                cb_rutaOferta.IsEnabled = false;
+                cambiaModoCasillasOferta(true);
+                img_bt_guardarOferta.Visibility = Visibility.Hidden;
+                img_bt_nombreOferta.Visibility = Visibility.Hidden;
+
+                imprimeExcursionistasNotificaciones();
             }
             else
             {
@@ -1275,48 +1325,199 @@ namespace HITO2_IPO_NUEVO
         {
             inicializaComponenentesOfertas();
             bt_guardarOferta.IsEnabled = true;
+            cb_rutaOferta.IsEnabled = true;
+            cambiaModoCasillasOferta(false);
+            bt_enviarOferta.IsEnabled = false;
+            lb_exc.Items.Clear();
+            lb_ofertas.Items.Clear();
         }
 
-        //FALTA SELECCIONAR RUTA PARA ASIGNAR---------------------------------------------------------------------------------------------------
-        private void clickGuardarOferta(object sender, RoutedEventArgs e)
+         private void clickGuardarOferta(object sender, RoutedEventArgs e)
         {
-            //if (string.IsNullOrEmpty(Textbox1.Text))
+
 
             Ruta rutaAux = null;
             Oferta ofertaAux = new Oferta(0, rutaAux, "");
 
-            ofertaAux.Id = int.Parse(tb_nombre_oferta.Text);
-            ofertaAux.Descripcion = tb_descripcionoferta.Text;
-            //ofertaAux.Ruta = extraeRutaParaOferta();
-
-            foreach (Ruta rutaAuxx in listadoRutas)
+            if (compruebaValidezCasillasOferta())
             {
-                if (rutaAuxx.Nombre == tb_rutaOferta.Text)
+                ofertaAux.Id = int.Parse(tb_nombre_oferta.Text);
+                ofertaAux.Descripcion = tb_descripcionoferta.Text;
+
+                String nombreRuta = cb_rutaOferta.SelectedItem.ToString();
+
+                foreach (Ruta rutaAuxx in listadoRutas)
                 {
-                    ofertaAux.Ruta = rutaAuxx;
+                    if (rutaAuxx.Nombre == nombreRuta)
+                    {
+                        ofertaAux.Ruta = rutaAuxx;
+                    }
                 }
+
+                int posicionOferta = buscaOferta(ofertaAux.Id);
+                if (posicionOferta == -1)
+                {
+                    ofertaAux.IMG_OFERTA = IMAGEN_OFERTA_DEFAULT;
+                    listadoOfertas.Add(ofertaAux);
+                    imprimirNombreOfertas();
+                }
+                else
+                {
+                    ofertaAux.IMG_OFERTA = listadoOfertas[posicionOferta].IMG_OFERTA;
+                    listadoOfertas[posicionOferta] = ofertaAux;              
+                }
+
+                inicializaComponenentesOfertas();
+
+            }
+        }
+
+        
+
+        private void compruebaValidezCasillasOferta(object sender, TextCompositionEventArgs e)
+        {
+            
+            if (tb_descripcionoferta.Text == "" || tb_nombre_oferta.Text == "" || cb_rutaOferta.SelectedIndex == -1 )
+            {
+                img_bt_guardarOferta.Visibility = Visibility.Visible;
+                img_bt_guardarOferta.Source = imagCross;
+                img_bt_guardarOferta.ToolTip = "Debe rellenar todos los campos de esta pestaña para guardar la nueva oferta";
+
+            }
+            else
+            {
+                img_bt_guardarOferta.Visibility = Visibility.Visible;
+                img_bt_guardarOferta.Source = imagCheck;
+                img_bt_guardarOferta.ToolTip = "Campos de esta pestaña rellenados correctamente";
+
             }
 
-            listadoOfertas.Add(ofertaAux);
-            imprimirNombreOfertas();
         }
 
-        private Ruta extraeRutaParaOferta()
+        private bool compruebaValidezCasillasOferta()
         {
-            tcPestanas.SelectedIndex = 0;
-            Guia guiaAux = null;
-            var rutaAux = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaAux);
-            ListBoxRutas.SelectedIndex = -1;
-            while (ListBoxRutas.SelectedIndex == -1) ;
-            rutaAux.Nombre = tb_nombre.Text;
-            rutaAux.Origen = tb_origen.Text;
-            rutaAux.Destino = tb_destino.Text;
-            rutaAux.Provincia = tb_provincia.Text;
-            rutaAux.Dificultad = tb_dificultad.Text;
-            rutaAux.PlazasDisponibles = int.Parse(tb_plazas.Text);
-            rutaAux.Fecha = Convert.ToDateTime(dp_fecha.Text);
-            return rutaAux;
+            bool valido = true;
+
+            if (tb_descripcionoferta.Text == "" || tb_nombre_oferta.Text == "" || cb_rutaOferta.SelectedIndex == -1)
+            {
+                img_bt_guardarOferta.Visibility = Visibility.Visible;
+                img_bt_guardarOferta.Source = imagCross;
+                img_bt_guardarOferta.ToolTip = "Debe rellenar todos los campos de esta pestaña para guardar la nueva oferta";
+                valido = false;
+            }
+            else
+            {
+                img_bt_guardarOferta.Visibility = Visibility.Visible;
+                img_bt_guardarOferta.Source = imagCheck;
+                img_bt_guardarOferta.ToolTip = "Campos de esta pestaña rellenados correctamente";
+
+            }
+
+
+            return valido;
         }
+
+        private int buscaOferta(int idOferta)
+        {
+            int posicion = -1;
+            int contador = 0;
+            foreach (Oferta ofertaAux in listadoOfertas)
+            {
+                if (ofertaAux.Id == idOferta)
+                {
+                    posicion = contador;
+                }
+                contador++;
+            }
+            return posicion;
+
+        }
+
+        private void click_editar_oferta(object sender, RoutedEventArgs e)
+        {
+            bt_enviarOferta.IsEnabled = false;
+            lb_exc.Items.Clear();
+            lb_ofertas.Items.Clear();
+
+            int index = ListBoxRutas.SelectedIndex;
+            var rutaAux = listadoRutas[index];
+            imprimirNombrePuntosInteres(rutaAux.Nombre);
+        }
+
+
+        private void click_eliminar_oferta(object sender, RoutedEventArgs e)
+        {
+            int posicionOferta = buscaOferta(int.Parse(tb_nombre_oferta.Text));
+            listadoOfertas.Remove(listadoOfertas[posicionOferta]);
+            imprimirNombreOfertas();
+            inicializaComponenentesOfertas();
+        }
+
+        private void NumericOnlyIdOferta(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextNumeric(e.Text);
+            if (e.Handled == false)
+            {
+                img_bt_nombreOferta.Source = imagCheck;
+                img_bt_nombreOferta.Visibility = Visibility.Visible;
+                img_bt_nombreOferta.ToolTip = "Formato adecuado";
+            }
+            else
+            {
+                img_bt_nombreOferta.Source = imagCross;
+                img_bt_nombreOferta.Visibility = Visibility.Visible;
+                img_bt_nombreOferta.ToolTip = "Debes introducir un formato numérico";
+            }
+
+        }
+
+        private void click_añadir_destinatario_Oferta(object sender, RoutedEventArgs e)
+        {
+            if (lb_exc.SelectedItem != null)
+            {
+                lb_ofertas.Items.Add(lb_exc.SelectedItem);
+                lb_exc.Items.Remove(lb_exc.SelectedItem);
+                bt_enviarOferta.IsEnabled = true;
+            }
+        }
+
+        private void lstEx_SelectionChanged(object sender, MouseButtonEventArgs controlUnderMouse)
+        {
+            if (controlUnderMouse.GetType() != typeof(ListBoxItem))
+            {
+                lb_exc.SelectedItem = null;
+            }
+        }
+
+        private void click_enviar_Oferta(object sender, RoutedEventArgs e)
+        {
+            imprimeExcursionistasNotificaciones();
+            lb_envio_correcto.Visibility = Visibility.Visible;
+            bt_enviarOferta.IsEnabled = false;
+        }
+
+
+        private void imprimeExcursionistasNotificaciones()
+        {
+            lb_exc.Items.Clear();
+            lb_ofertas.Items.Clear();
+            foreach (Excursionista excursionistaAux in listadoExcursionistas)
+            {
+                if (excursionistaAux.Notificaciones)
+                {
+                    lb_exc.Items.Add(excursionistaAux.Name);
+                }
+            }
+        }
+
+        private void Grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            lb_envio_correcto.Visibility = Visibility.Hidden;
+        }
+
+
+
+
 
 
 
@@ -1555,7 +1756,7 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 0;
         }
 
-        
+       
     }
 }
     

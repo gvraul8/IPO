@@ -739,7 +739,7 @@
                             </Grid>
                         </StackPanel>
                     </TabItem.Header>
-                    <Grid>
+                    <Grid PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown">
                         <!-- COPIado a partir de aqui-->
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.05*"/>
@@ -782,8 +782,10 @@
                                         <RowDefinition Height="0.05*"/>
                                     </Grid.RowDefinitions>
 
+                                    <Image x:Name="img_bt_nombreOferta" Grid.Column="3" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="220,10,0,0" Grid.Row="1"/>
+
                                     <Viewbox Grid.Column="1" Grid.ColumnSpan="4" Height="Auto" VerticalAlignment="Center" Grid.Row="1">
-                                        <TextBox x:Name="tb_nombre_oferta" Text="Nombre de la oferta"   IsReadOnly="True"  FontWeight="Bold" FontSize="24" BorderBrush="Transparent"/>
+                                        <TextBox x:Name="tb_nombre_oferta" Text="Nombre de la oferta"   IsReadOnly="True"  FontWeight="Bold" FontSize="24" BorderBrush="Transparent" PreviewTextInput="NumericOnlyIdOferta"/>
                                     </Viewbox>
 
                                     <Grid Grid.Column="1" Grid.Row="2">
@@ -800,11 +802,11 @@
 
 
                                         <TextBlock x:Name="lb_rutaOferta" TextWrapping="Wrap" Text="Ruta asociada" Grid.Row="0" Grid.ColumnSpan="2"  Grid.RowSpan="2" />
-                                        <TextBox x:Name="tb_rutaOferta"  VerticalScrollBarVisibility="Visible" IsReadOnly="True" TextWrapping="Wrap" Grid.Row="2" VerticalAlignment="Top" Height="38"  Margin="0,11,0,0" Grid.RowSpan="2" />
 
                                         <TextBlock x:Name="lb_descripcionoferta"  Text="Descripción" TextWrapping="Wrap" Grid.Row="4"></TextBlock>
 
                                         <TextBox x:Name="tb_descripcionoferta"  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="6" VerticalAlignment="Center" Height="117"/>
+                                        <ComboBox x:Name="cb_rutaOferta" HorizontalAlignment="Center" Height="49" Margin="0,6,0,0" Grid.RowSpan="2" Grid.Row="1" VerticalAlignment="Top" Width="225"/>
 
 
                                     </Grid>
@@ -832,15 +834,17 @@
                                     </Grid.RowDefinitions>
                                     <Viewbox Grid.Column="3" Grid.RowSpan="2" HorizontalAlignment="Center"  Width="309" Margin="0,0,0,13"/>
                                     <TextBlock x:Name="tb_excursionistas"  FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Text="EXCURSIONISTAS" Grid.Column="0" Grid.ColumnSpan="5" Width="166" Grid.Row="1" />
-                                    <ListBox  x:Name="lb_ofertas" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,22,26,0" Grid.RowSpan="5" />
-                                    <ListBox  x:Name="lb_exc" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,22,27,0" Grid.RowSpan="5" RenderTransformOrigin="0.482,0.315" />
-                                    <Button x:Name="añadir" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,40,241,0" Grid.RowSpan="2" Background="Transparent" >
+                                    <ListBox  x:Name="lb_ofertas" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,26,0" Grid.RowSpan="3" Height="90" VerticalAlignment="Top" />
+                                    <ListBox  x:Name="lb_exc" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,27,3" Grid.RowSpan="3" Height="90" RenderTransformOrigin="0.482,0.315" PreviewMouseLeftButtonDown="lstEx_SelectionChanged" />
+                                    <Button x:Name="añadir" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,40,241,0" Grid.RowSpan="2" Background="Transparent" Click="click_añadir_destinatario_Oferta" >
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="/Imagenes/add.png" Width="15" />
                                             <TextBlock  VerticalAlignment="Center"  Width="Auto"><Run /></TextBlock>
                                         </StackPanel>
 
                                     </Button>
+                                    <Label Grid.Column="3" Content="Destinatarios" HorizontalAlignment="Center" Height="23" Margin="0,23,0,0" Grid.Row="1" VerticalAlignment="Top" Width="81" Grid.RowSpan="3" FontSize="12" FontWeight="Normal"/>
+                                    <Label Grid.Column="1" Content="Subscritos a notificaciones" HorizontalAlignment="Center" Height="24" Margin="0,23,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" FontSize="12" Grid.RowSpan="3"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
@@ -869,14 +873,14 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_editarOferta" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_editarOferta" Height="Auto" Grid.Row="1"  Grid.Column="3" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_editar_oferta" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="15" Source="/Imagenes/edit.png"  />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Editar"/></TextBlock>
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_eliminarOferta" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" >
+                            <Button x:Name ="bt_eliminarOferta" Height="Auto" Grid.Row="1"  Grid.Column="5" VerticalAlignment="Top" Background="#FF423F3F" Foreground="White" Width="Auto" MaxHeight="60" MaxWidth="120" Click="click_eliminar_oferta" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/delete.png"  Width="15" />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Eliminar"/></TextBlock>
@@ -904,6 +908,8 @@
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
+                            <Image x:Name="img_bt_guardarOferta" Grid.Column="2" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="85,-26,0,0"/>
+
                             <Button x:Name ="bt_guardarOferta" Height="Auto" Grid.Row="1"  Grid.Column="2" VerticalAlignment="Top" Background="ForestGreen" Foreground="Black" Width="158" Click="clickGuardarOferta" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Imagenes/save.png" Width="15" />
@@ -911,7 +917,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_enviarOferta" Height="31.5" Grid.Row="1"  Grid.Column="4" VerticalAlignment="Top" Background="Yellow" Foreground="Black" Width="Auto"  >
+                            <Button x:Name ="bt_enviarOferta" Height="31.5" Grid.Row="1"  Grid.Column="4" VerticalAlignment="Top" Background="Yellow" Foreground="Black" Width="Auto" Click="click_enviar_Oferta"  >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="15" Source="/Imagenes/info.png"  />
                                     <TextBlock Margin="2,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Enviar"/></TextBlock>
@@ -920,6 +926,7 @@
 
 
                         </Grid>
+                        <Label x:Name="lb_envio_correcto" Grid.Column="3" Content="¡Envío realizado correctamente!" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="36" Margin="374,1,0,0" Grid.Row="5" VerticalAlignment="Top" Width="239" FontSize="15" Visibility="Hidden" Foreground="Black" FontWeight="Bold"/>
 
                     </Grid>
 
@@ -929,12 +936,16 @@
                     <TabItem.Header>
                         <StackPanel Width="100" Height="35">
                             <Grid Height="35">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="23*"/>
+                                    <RowDefinition Height="12*"/>
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="0.25*"/>
                                     <ColumnDefinition Width="0.75*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image Source="Imagenes/pdi.png" Grid.Column="0"/>
-                                <TextBlock Text="PDIs" HorizontalAlignment="Center" Grid.Column="1"/>
+                                <Image Source="Imagenes/pdi.png" Grid.Column="0" Grid.RowSpan="2"/>
+                                <TextBlock Text="PDIs" HorizontalAlignment="Center" Grid.Column="1" Grid.RowSpan="2"/>
                             </Grid>
                         </StackPanel>
                     </TabItem.Header>
