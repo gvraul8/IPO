@@ -17,7 +17,7 @@
 		    URL_INTERES ="https://www.aramon.com/blog/wp-content/uploads/2019/07/ordesa-ni%C3%B1os.jpg" Guia="user4"/>
 	<Ruta Nombre="Cahorros del Río Chillar" Origen="Nerja" Destino="Parque Natural del Alto Tajo" Provincia ="Málaga"
             Fecha ="22/07/2026 15:00:00" Dificultad="Media-Alta"
-            PlazasDisponibles="23" MaterialNecesario="Chubasquero" NumeroDeRealizaciones = "100"
+            PlazasDisponibles="19" MaterialNecesario="Chubasquero" NumeroDeRealizaciones = "100"
 		    URL_RUTA="https://content.skyscnr.com/m/063a88ab4013e626/original/GettyImages-482351109_doc.jpg"
 		    URL_INTERES ="https://content.skyscnr.com/m/6010a8783baddb28/original/GettyImages-167492760.jpg" Guia="user4"/>
 	<Ruta Nombre="Parque Natural del Gorbea" Origen="Los Lavaderos de la Reina" Destino="Macizo del Turbón" Provincia ="País Vasco"

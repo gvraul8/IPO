@@ -191,5 +191,11 @@
   <ItemGroup>
     <Resource Include="Imagenes\check.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\add_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\mayor-que.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

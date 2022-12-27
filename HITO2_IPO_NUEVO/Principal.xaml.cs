@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,8 +32,9 @@ namespace HITO2_IPO_NUEVO
         Usuario user;
         private BitmapImage imagCheck = new BitmapImage(new Uri("/Imagenes/check.png", UriKind.Relative)); 
         private BitmapImage imagCross = new BitmapImage(new Uri("/Imagenes/incorrect.png", UriKind.Relative));
+        private BitmapImage imagAdd = new BitmapImage(new Uri("/Imagenes/point-of-interest.png", UriKind.Relative));
         private Uri IMAGEN_USUARIO_DEFAULT = (new Uri("https://img1.freepng.es/20180407/oee/kisspng-computer-icons-avatar-user-profile-contact-5ac87865149c33.7908464015230874610844.jpg", UriKind.Absolute));
-        private Uri IMAGEN_RUTA_DEFAULT = (new Uri("https://retos-operaciones-logistica.eae.es/wp-content/uploads/2018/04/iStock-627490508-600x450.jpg", UriKind.Absolute));
+        private Uri IMAGEN_RUTA_DEFAULT = (new Uri("https://retos-operaciones-logistica.eae.es/wp-content/uploads/2018/04/iStock-627490508-600x450.jpghttps://img.freepik.com/premium-vector/active-tourist-woman-walking-path-admiring-mountain-landscape-vector-graphic-illustration-travel-cartoon-female-contemplating-natural-scenery-concept-journey-new-discoveries_198278-9873.jpg?w=2000", UriKind.Absolute));
         private Uri IMAGEN_OFERTA_DEFAULT = (new Uri("https://i0.wp.com/rogarsol.com/wp-content/uploads/2017/07/oferta.png?resize=301%2C167", UriKind.Absolute));
         private Uri IMAGEN_PDI_DEFAULT = (new Uri("https://img.freepik.com/fotos-premium/puntos-destino-viaje-mapa-indicado-chinchetas-coloridas_93675-31562.jpg?w=2000", UriKind.Absolute));
         
@@ -48,7 +50,7 @@ namespace HITO2_IPO_NUEVO
 
 
             listadoRutas = CargarContenidoRutasXML();
-            imprimirNombreRutas();
+            imprimirNombreRutas(0);
             inicializaComponentesRutas();
 
             listadoExcursionistas = CargarContenidoExcursionistasXML();
@@ -83,7 +85,8 @@ namespace HITO2_IPO_NUEVO
         {
             lbNombreUsuario.Content = user.Name.ToString(); ;
             lbApellidosUsuario.Content = user.LastName.ToString();
-            lbEmailUsuario.Content=user.Email.ToString();  
+            lbEmailUsuario.Content=user.Email.ToString();
+            lbLastLoginUsuario.Content = user.LastLogin.ToString();
            // lbUltimoAccesoUsuario.Content = user.LastLogin.ToString();
 
             var fullFilePath = user.ImgUrl.ToString();
@@ -131,7 +134,9 @@ namespace HITO2_IPO_NUEVO
             {
                 tb_nombre.Text = "Escriba aqui el nombre de la ruta";
                 bt_verGuiaRuta.Content = "Seleccionar guia";
+                img_btnConsultarGuia.Source = imagAdd;
                 bt_consultarPDis.Content = "Añadir PDI";
+                img_btnConsultarPDIs.Source = imagAdd;
                 // bt_consultarPDis.IsEnabled = !bloqueado;
                 tb_nombre.Focus();
             }
@@ -142,13 +147,51 @@ namespace HITO2_IPO_NUEVO
 
         }
 
-        private void imprimirNombreRutas()
+        private void cambi_seleccionTipoRuta(object sender, SelectionChangedEventArgs e)
         {
-            ListBoxRutas.Items.Clear();
-
-            for (int i = 0; i < listadoRutas.Count; i++)
+            if (cb_tipoRuta.SelectedIndex == 1)
             {
-                ListBoxRutas.Items.Add(listadoRutas[i].Nombre);
+                imprimirNombreRutas(1);
+            }
+            else if (cb_tipoRuta.SelectedIndex == 2)
+            {
+                imprimirNombreRutas(2);
+            }
+            else
+            {
+                imprimirNombreRutas(0); 
+            }
+        }
+
+        private void imprimirNombreRutas(int cb_selected)
+        {
+            if (cb_selected== 0)
+            {
+                foreach (Ruta ruta in listadoRutas)
+                {
+                    ListBoxRutas.Items.Add(ruta.Nombre);
+                }
+            } 
+            else
+            {
+                ListBoxRutas.Items.Clear();
+                foreach (Ruta ruta in listadoRutas)
+                {
+                    if (ruta.Fecha <  DateTime.Now)
+                    {
+                        if (cb_selected == 1)
+                        {
+                            ListBoxRutas.Items.Add(ruta.Nombre);
+                        }
+                    }
+                    else
+                    {
+                        if (cb_selected == 2)
+                        {
+                            ListBoxRutas.Items.Add(ruta.Nombre);
+                        }
+                    }
+                }
             }
         }
 
@@ -223,11 +266,9 @@ namespace HITO2_IPO_NUEVO
 
         private void cambiaModoCasillasRuta(bool soloLectura)
         {
-            if (tb_nombre.Text == String.Empty) //evita que se edite el nombre de la ruta existente
-            {
-                tb_nombre.IsReadOnly = soloLectura;
-            }
-
+      
+            tb_nombre.IsReadOnly = soloLectura;
+            tb_nombre.IsReadOnly = soloLectura;
             tb_origen.IsReadOnly = soloLectura;
             tb_destino.IsReadOnly = soloLectura;
             tb_provincia.IsReadOnly = soloLectura;
@@ -237,16 +278,14 @@ namespace HITO2_IPO_NUEVO
 
             if (!soloLectura)
             {
-                if (tb_nombre.Text == String.Empty)
+                if (tb_nombre.Text == String.Empty) //evita que se edite el nombre de la ruta existente
                 {
                     tb_nombre.Text = "Escriba aqui el nombre de la nueva ruta";
-                    bt_verGuiaRuta.Content = "Seleccionar guia";
-                    bt_consultarPDis.Content = "Añadir PDI";
-                    bt_verGuiaRuta.IsEnabled = true;
-                    bt_consultarPDis.IsEnabled = true;
-
                 }
-
+                bt_verGuiaRuta.Content = "Seleccionar guia";
+                bt_consultarPDis.Content = "Añadir PDI";
+                bt_verGuiaRuta.IsEnabled = true;
+                bt_consultarPDis.IsEnabled = true;
             }
         }
 
@@ -256,6 +295,7 @@ namespace HITO2_IPO_NUEVO
             if (ListBoxRutas.SelectedItem != null)
             {
                 int index = ListBoxRutas.SelectedIndex;
+
                 var rutaAux = listadoRutas[index];
 
                 tb_nombre.Text = rutaAux.Nombre.ToString();
@@ -391,7 +431,17 @@ namespace HITO2_IPO_NUEVO
                 rutaNula.Provincia = tb_provincia.Text;
                 rutaNula.Dificultad = tb_dificultad.Text;
                 rutaNula.PlazasDisponibles = int.Parse(tb_plazas.Text);
-                rutaNula.Fecha = Convert.ToDateTime(dp_fecha.Text);
+                if (Convert.ToDateTime(dp_fecha.Text) < DateTime.Now)
+                {
+                    img_tb_fecha.Source = imagCross;
+                    img_tb_fecha.ToolTip = "La fecha no puede ser anterior a la actual";
+
+                }
+                else
+                {
+                    rutaNula.Fecha = Convert.ToDateTime(dp_fecha.Text);
+                }
+                
 
                 if (rutaNula.Guia != null && rutaTieneAlgunPDI(rutaNula.Nombre))
                 {
@@ -418,7 +468,8 @@ namespace HITO2_IPO_NUEVO
                     tiOfertas.IsEnabled = true;
 
                     inicializaComponentesRutas();
-                    imprimirNombreRutas();
+                    ListBoxRutas.Items.Clear();
+                    imprimirNombreRutas(0);
 
                 }
                 else if (rutaNula.Guia == null && rutaTieneAlgunPDI(rutaNula.Nombre))
@@ -581,7 +632,8 @@ namespace HITO2_IPO_NUEVO
         {
             int posicionRuta = buscaRuta(tb_nombre.Text);
             listadoRutas.Remove(listadoRutas[posicionRuta]);
-            imprimirNombreRutas();
+            ListBoxRutas.Items.Clear();
+            imprimirNombreRutas(0);
             inicializaComponentesRutas();
             List<PuntoInteres> listaAux = new List<PuntoInteres>(listadoPuntosInteres);
 
@@ -709,11 +761,7 @@ namespace HITO2_IPO_NUEVO
 
         private void cambiaModoCasillasExcursionista(bool soloLectura)
         {
-            if (tb_nombre_excursionista.Text == String.Empty) //evita que se edite el nombre del excursionista existente
-            {
-                tb_nombre_excursionista.IsReadOnly = soloLectura;
-            }
-            
+            tb_nombre_excursionista.IsReadOnly = soloLectura;
             tb_edad.IsReadOnly = soloLectura;
             tb_telefonoexcursionista.IsReadOnly = soloLectura;
             tb_correoexcursionista.IsReadOnly = soloLectura;
@@ -944,6 +992,126 @@ namespace HITO2_IPO_NUEVO
 
         }
 
+        private void TelefonoFormatExcursionista(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextNumeric(e.Text);
+            if (e.Handled == false)
+            {
+                if(tb_telefonoexcursionista.Text.Length == 8)
+                {
+                    img_tb_telefonoExcursionista.Source = imagCheck;
+                    img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
+                    img_tb_telefonoExcursionista.ToolTip = "Formato adecuado";
+                }
+                else
+                {
+                    img_tb_telefonoExcursionista.Source = imagCross;
+                    img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
+                    img_tb_telefonoExcursionista.ToolTip = "Debes introducir 9 dígitos";
+                }
+
+            }
+            else
+            {
+                img_tb_telefonoExcursionista.Source = imagCross;
+                img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
+                img_tb_telefonoExcursionista.ToolTip = "Debes introducir un formato numérico";
+            }
+
+        }
+
+
+        private void tb_emailExcursionista_TextChanged(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Handled == false)
+            {
+                Boolean valido;
+
+                Regex regex = new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{1,4}$");
+
+                valido = regex.IsMatch(tb_correoexcursionista.Text);
+
+                if (valido)
+                {
+                    img_tb_correoExcursionista.Source = imagCheck;
+                    img_tb_correoExcursionista.Visibility = Visibility.Visible;
+                    img_tb_correoExcursionista.ToolTip = "Formato adecuado";
+                }
+                else
+                {
+                    img_tb_correoExcursionista.Source = imagCross;
+                    img_tb_correoExcursionista.Visibility = Visibility.Visible;
+                    img_tb_correoExcursionista.ToolTip = "Debes introducir un email";
+                }
+            }
+            else
+            {
+                img_tb_correoExcursionista.Source = imagCross;
+                img_tb_correoExcursionista.Visibility = Visibility.Visible;
+                img_tb_correoExcursionista.ToolTip = "Debes introducir un formato válido";
+            }
+        }
+
+
+        private void TelefonoFormatGuia(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = IsTextNumeric(e.Text);
+            if (e.Handled == false)
+            {
+                if (tb_telefonoguia.Text.Length == 8)
+                {
+                    img_tb_telefonoGuia.Source = imagCheck;
+                    img_tb_telefonoGuia.Visibility = Visibility.Visible;
+                    img_tb_telefonoGuia.ToolTip = "Formato adecuado";
+                }
+                else
+                {
+                    img_tb_telefonoGuia.Source = imagCross;
+                    img_tb_telefonoGuia.Visibility = Visibility.Visible;
+                    img_tb_telefonoGuia.ToolTip = "Debes introducir 9 dígitos";
+                }
+
+            }
+            else
+            {
+                img_tb_telefonoGuia.Source = imagCross;
+                img_tb_telefonoGuia.Visibility = Visibility.Visible;
+                img_tb_telefonoGuia.ToolTip = "Debes introducir un formato numérico";
+            }
+
+        }
+
+
+        private void emailFormatGuia(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Handled == false)
+            {
+                Boolean valido;
+
+                Regex regex = new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{1,4}$");
+
+                valido = regex.IsMatch(tb_correoguia.Text);
+
+                if (valido)
+                {
+                    img_tb_correoGuia.Source = imagCheck;
+                    img_tb_correoGuia.Visibility = Visibility.Visible;
+                    img_tb_correoGuia.ToolTip = "Formato adecuado";
+                }
+                else
+                {
+                    img_tb_correoGuia.Source = imagCross;
+                    img_tb_correoGuia.Visibility = Visibility.Visible;
+                    img_tb_correoGuia.ToolTip = "Debes introducir un email";
+                }
+            }
+            else
+            {
+                img_tb_correoGuia.Source = imagCross;
+                img_tb_correoGuia.Visibility = Visibility.Visible;
+                img_tb_correoGuia.ToolTip = "Debes introducir un formato válido";
+            }
+        }
         private void click_editar_excursionista(object sender, RoutedEventArgs e)
         {
             cambiaModoCasillasExcursionista(false);
@@ -1092,10 +1260,7 @@ namespace HITO2_IPO_NUEVO
 
         private void cambiaModoCasillasGuia(bool soloLectura)
         {
-            if (tb_nombreguia.Text == String.Empty) //evita que se edite el nombre del guia existente
-            {
-                tb_nombreguia.IsReadOnly = soloLectura;
-            }
+            tb_nombreguia.IsReadOnly = soloLectura;
             tb_idiomas.IsReadOnly = soloLectura;
             tb_correoguia.IsReadOnly = soloLectura;
             tb_telefonoguia.IsReadOnly = soloLectura;
@@ -1454,11 +1619,8 @@ namespace HITO2_IPO_NUEVO
 
         private void cambiaModoCasillasOferta(bool soloLectura)
         {
-            if (tb_nombre_oferta.Text == String.Empty) //evita que se edite el nombre de la oferta existente
-            {
-                tb_nombre_oferta.IsReadOnly = soloLectura;
-            }
-
+            
+            tb_nombre_oferta.IsReadOnly = soloLectura;
             tb_descripcionoferta.IsReadOnly = soloLectura;
             cb_rutaOferta.IsEnabled = !soloLectura;
 
@@ -1819,11 +1981,8 @@ namespace HITO2_IPO_NUEVO
 
         private void cambiaModoCasillasPDIs(bool soloLectura)
         {
-            if (tb_nombre_pdi.Text == String.Empty) //evita que se edite el nombre del punto de interes existente
-            {
-                tb_nombre_pdi.IsReadOnly = soloLectura;
-            }
-
+            
+            tb_nombre_pdi.IsReadOnly = soloLectura;
             tb_descripcionpdi.IsReadOnly = soloLectura;
             cb_ruta_PDI.IsEnabled = !soloLectura;
 
@@ -2059,6 +2218,12 @@ namespace HITO2_IPO_NUEVO
             e.Handled = IsTextNumeric(e.Text);
             if (e.Handled == false)
             {
+                if (Convert.ToInt32(tb_plazas.Text) < 4 || Convert.ToInt32(tb_plazas.Text)>20)
+                {
+                    img_tb_plazas.Source=imagCross;
+                    img_tb_plazas.Visibility = Visibility.Visible;
+                    img_tb_plazas.ToolTip="Las plazas disponibles deben estar entre 4 y ";
+                }
                 img_tb_plazas.Source=imagCheck;
                 img_tb_plazas.Visibility = Visibility.Visible;
                 img_tb_plazas.ToolTip="Formato adecuado";
@@ -2134,7 +2299,10 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 0;
         }
 
-        
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
     
