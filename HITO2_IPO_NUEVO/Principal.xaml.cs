@@ -41,6 +41,8 @@ namespace HITO2_IPO_NUEVO
         static Guia guiaNulo = null;
         static Ruta rutaNula = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaNulo);
 
+        private bool impresoNombresRutas = false;
+        private bool pestañasInicializadas = false;
 
         public Principal(Usuario u)
         {
@@ -51,6 +53,7 @@ namespace HITO2_IPO_NUEVO
 
             listadoRutas = CargarContenidoRutasXML();
             imprimirNombreRutas(0);
+            impresoNombresRutas = true;
             inicializaComponentesRutas();
 
             listadoExcursionistas = CargarContenidoExcursionistasXML();
@@ -142,6 +145,7 @@ namespace HITO2_IPO_NUEVO
             }
             else
             {
+                bt_verGuiaRuta.Content = "Consultar guia";
                 bt_consultarPDis.Content = "Consultar PDIs";
             }
 
@@ -165,8 +169,13 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreRutas(int cb_selected)
         {
+            
             if (cb_selected== 0)
             {
+                if (impresoNombresRutas == true)
+                {
+                    ListBoxRutas.Items.Clear();
+                }
                 foreach (Ruta ruta in listadoRutas)
                 {
                     ListBoxRutas.Items.Add(ruta.Nombre);
@@ -259,8 +268,17 @@ namespace HITO2_IPO_NUEVO
             list_excursionistas.Items.Clear();
 
             img_bt_guardarRuta.Visibility = Visibility.Hidden;
+            img_tb_fecha.Visibility = Visibility.Hidden;
 
             img_tb_plazas.Visibility = Visibility.Hidden;
+
+            chb_apuntarseRuta.IsChecked = false;
+            //chb_apuntarseRuta.IsEnabled = false;
+
+            tiRutas.IsEnabled = true;
+            tiGuia.IsEnabled = true;
+            tiExcursionista.IsEnabled = true;
+            tiOfertas.IsEnabled = true;
 
         }
 
@@ -294,7 +312,10 @@ namespace HITO2_IPO_NUEVO
 
             if (ListBoxRutas.SelectedItem != null)
             {
-                int index = ListBoxRutas.SelectedIndex;
+
+                chb_apuntarseRuta.IsChecked = false;
+
+                int index = buscaRuta(ListBoxRutas.SelectedItem.ToString());
 
                 var rutaAux = listadoRutas[index];
 
@@ -335,6 +356,7 @@ namespace HITO2_IPO_NUEVO
                 list_excursionistas.Items.Clear();
 
                 img_bt_guardarRuta.Visibility = Visibility.Hidden;
+                img_tb_fecha.Visibility = Visibility.Hidden;
 
                 tiRutas.IsEnabled = true;
                 tiGuia.IsEnabled = true;
@@ -344,6 +366,31 @@ namespace HITO2_IPO_NUEVO
                 inicializaComponenentesPuntosInteres();
 
                 img_tb_plazas.Visibility = Visibility.Hidden;
+
+                int posicionUsuario = buscaExcursionista(lbNombreUsuario.Content.ToString());
+                if (posicionUsuario != -1)
+                {
+                    foreach(Ruta ruta in listadoExcursionistas[posicionUsuario].RutasFuturas)
+                    {
+                        if (ruta.Nombre == rutaAux.Nombre)
+                        {
+                            chb_apuntarseRuta.IsChecked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    posicionUsuario = buscaGuia(lbNombreUsuario.Content.ToString());
+                    foreach (Ruta ruta in listadoGuias[posicionUsuario].RutasFuturas)
+                    {
+                        if (ruta.Nombre == rutaAux.Nombre)
+                        {
+                            chb_apuntarseRuta.IsChecked = true;
+                        }
+                    }
+                }
+                
+
             }
             else
             {
@@ -434,6 +481,7 @@ namespace HITO2_IPO_NUEVO
                 if (Convert.ToDateTime(dp_fecha.Text) < DateTime.Now)
                 {
                     img_tb_fecha.Source = imagCross;
+                    img_tb_fecha.Visibility = Visibility.Visible;
                     img_tb_fecha.ToolTip = "La fecha no puede ser anterior a la actual";
 
                 }
@@ -837,7 +885,7 @@ namespace HITO2_IPO_NUEVO
 
         private void ComboBoxRutasExcursionistas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (cb_rutasEx.SelectedValue != null)
             {
                 string selectedItem = cb_rutasEx.SelectedValue.ToString();
 
@@ -849,10 +897,6 @@ namespace HITO2_IPO_NUEVO
                 {
                     imprimeRutasFuturasExcursionista();
                 }
-            }
-            catch (System.NullReferenceException)
-            {
-                
             }
         }
 
@@ -1532,6 +1576,7 @@ namespace HITO2_IPO_NUEVO
             rutaNula.Guia = listadoGuias[posicionGuia];
 
             tcPestanas.SelectedIndex = 0;
+            img_bt_asignarGuia.Visibility = Visibility.Hidden;
 
         }
 
@@ -2299,10 +2344,64 @@ namespace HITO2_IPO_NUEVO
             tcPestanas.SelectedIndex = 0;
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
 
+        private void click_checkbox_apuntarse_ruta(object sender, RoutedEventArgs e)
+        {
+            if (chb_apuntarseRuta.IsChecked == true && ListBoxRutas.SelectedIndex != -1 && Convert.ToDateTime(dp_fecha.Text) < DateTime.Now)
+            {
+                int posicionRuta = buscaRuta(tb_nombre.Text);
+
+                int posicionUsuario = buscaExcursionista(lbNombreUsuario.Content.ToString());
+                if (posicionUsuario != -1)
+                {
+                    listadoExcursionistas[posicionUsuario].RutasFuturas.Add(listadoRutas[posicionRuta]);
+                }
+                else
+                {
+                    posicionUsuario = buscaGuia(lbNombreUsuario.Content.ToString());
+                    listadoGuias[posicionUsuario].RutasFuturas.Add(listadoRutas[posicionRuta]);
+                }
+            }
+            else if (chb_apuntarseRuta.IsChecked == false && ListBoxRutas.SelectedIndex != -1 && Convert.ToDateTime(dp_fecha.Text) < DateTime.Now)
+            {
+                int posicionRuta = buscaRuta(tb_nombre.Text);
+
+                int posicionUsuario = buscaExcursionista(lbNombreUsuario.Content.ToString());
+                if (posicionUsuario != -1)
+                {
+                    foreach(Ruta rutaAux in listadoExcursionistas[posicionUsuario].RutasFuturas)
+                    {
+                        if(rutaAux.Nombre == tb_nombre.Text)
+                        {
+                            listadoExcursionistas[posicionUsuario].RutasFuturas.Remove(rutaAux);
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    posicionUsuario = buscaGuia(lbNombreUsuario.Content.ToString());
+                    foreach (Ruta rutaAux in listadoGuias[posicionUsuario].RutasFuturas)
+                    {
+                        if (rutaAux.Nombre == tb_nombre.Text)
+                        {
+                            listadoGuias[posicionUsuario].RutasFuturas.Remove(rutaAux);
+                        }
+                    }
+                }
+            }
         }
+
+        private void inicializa_todas_pestañas()
+        {
+            inicializaComponentesRutas();
+            inicializaComponenentesExcursionistas();
+            inicializaComponenentesGuias();
+            inicializaComponenentesOfertas();
+            inicializaComponenentesPuntosInteres();
+        }
+
+
     }
 }
     
