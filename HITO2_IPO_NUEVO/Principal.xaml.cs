@@ -169,7 +169,8 @@ namespace HITO2_IPO_NUEVO
 
         private void imprimirNombreRutas(int cb_selected)
         {
-            
+
+
             if (cb_selected== 0)
             {
                 if (impresoNombresRutas == true)
@@ -273,7 +274,7 @@ namespace HITO2_IPO_NUEVO
             img_tb_plazas.Visibility = Visibility.Hidden;
 
             chb_apuntarseRuta.IsChecked = false;
-            //chb_apuntarseRuta.IsEnabled = false;
+            chb_apuntarseRuta.IsEnabled = false;
 
             tiRutas.IsEnabled = true;
             tiGuia.IsEnabled = true;
@@ -312,7 +313,7 @@ namespace HITO2_IPO_NUEVO
 
             if (ListBoxRutas.SelectedItem != null)
             {
-
+              
                 chb_apuntarseRuta.IsChecked = false;
 
                 int index = buscaRuta(ListBoxRutas.SelectedItem.ToString());
@@ -389,6 +390,12 @@ namespace HITO2_IPO_NUEVO
                         }
                     }
                 }
+
+                if  (Convert.ToDateTime(dp_fecha.Text) > DateTime.Now)
+                {
+                    chb_apuntarseRuta.IsEnabled = true;
+                    chb_apuntarseRuta.ToolTip = "Sólo puedes apuntarte a rutas que no se hayan realizado aún";
+                }
                 
 
             }
@@ -413,6 +420,7 @@ namespace HITO2_IPO_NUEVO
             if (controlUnderMouse.GetType() != typeof(ListBoxItem))
             {
                 ListBoxRutas.SelectedItem = null;
+                chb_apuntarseRuta.IsEnabled = false;
             }
         }
 
@@ -483,6 +491,7 @@ namespace HITO2_IPO_NUEVO
                     img_tb_fecha.Source = imagCross;
                     img_tb_fecha.Visibility = Visibility.Visible;
                     img_tb_fecha.ToolTip = "La fecha no puede ser anterior a la actual";
+                    dp_fecha.Background = Brushes.Red;
 
                 }
                 else
@@ -1026,12 +1035,14 @@ namespace HITO2_IPO_NUEVO
                 img_tb_edadExcursionista.Source = imagCheck;
                 img_tb_edadExcursionista.Visibility = Visibility.Visible;
                 img_tb_edadExcursionista.ToolTip = "Formato adecuado";
+                tb_edad.Background = Brushes.Green;
             }
             else
             {
                 img_tb_edadExcursionista.Source = imagCross;
                 img_tb_edadExcursionista.Visibility = Visibility.Visible;
                 img_tb_edadExcursionista.ToolTip = "Debes introducir un formato numérico";
+                tb_edad.Background = Brushes.Red;
             }
 
         }
@@ -1046,12 +1057,14 @@ namespace HITO2_IPO_NUEVO
                     img_tb_telefonoExcursionista.Source = imagCheck;
                     img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
                     img_tb_telefonoExcursionista.ToolTip = "Formato adecuado";
+                    tb_telefonoexcursionista.Background = Brushes.Green;
                 }
                 else
                 {
                     img_tb_telefonoExcursionista.Source = imagCross;
                     img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
                     img_tb_telefonoExcursionista.ToolTip = "Debes introducir 9 dígitos";
+                    tb_telefonoexcursionista.Background = Brushes.Red;
                 }
 
             }
@@ -1060,6 +1073,7 @@ namespace HITO2_IPO_NUEVO
                 img_tb_telefonoExcursionista.Source = imagCross;
                 img_tb_telefonoExcursionista.Visibility = Visibility.Visible;
                 img_tb_telefonoExcursionista.ToolTip = "Debes introducir un formato numérico";
+                tb_telefonoexcursionista.Background = Brushes.Red;
             }
 
         }
@@ -1080,12 +1094,14 @@ namespace HITO2_IPO_NUEVO
                     img_tb_correoExcursionista.Source = imagCheck;
                     img_tb_correoExcursionista.Visibility = Visibility.Visible;
                     img_tb_correoExcursionista.ToolTip = "Formato adecuado";
+                    tb_correoexcursionista.Background = Brushes.Green;
                 }
                 else
                 {
                     img_tb_correoExcursionista.Source = imagCross;
                     img_tb_correoExcursionista.Visibility = Visibility.Visible;
                     img_tb_correoExcursionista.ToolTip = "Debes introducir un email";
+                    tb_correoexcursionista.Background = Brushes.Red;
                 }
             }
             else
@@ -1093,6 +1109,7 @@ namespace HITO2_IPO_NUEVO
                 img_tb_correoExcursionista.Source = imagCross;
                 img_tb_correoExcursionista.Visibility = Visibility.Visible;
                 img_tb_correoExcursionista.ToolTip = "Debes introducir un formato válido";
+                tb_correoexcursionista.Background = Brushes.Red;
             }
         }
 
@@ -1107,12 +1124,14 @@ namespace HITO2_IPO_NUEVO
                     img_tb_telefonoGuia.Source = imagCheck;
                     img_tb_telefonoGuia.Visibility = Visibility.Visible;
                     img_tb_telefonoGuia.ToolTip = "Formato adecuado";
+                    tb_telefonoguia.Background = Brushes.Green;
                 }
                 else
                 {
                     img_tb_telefonoGuia.Source = imagCross;
                     img_tb_telefonoGuia.Visibility = Visibility.Visible;
                     img_tb_telefonoGuia.ToolTip = "Debes introducir 9 dígitos";
+                    tb_telefonoguia.Background = Brushes.Red;
                 }
 
             }
@@ -1121,6 +1140,7 @@ namespace HITO2_IPO_NUEVO
                 img_tb_telefonoGuia.Source = imagCross;
                 img_tb_telefonoGuia.Visibility = Visibility.Visible;
                 img_tb_telefonoGuia.ToolTip = "Debes introducir un formato numérico";
+                tb_telefonoguia.Background = Brushes.Red;
             }
 
         }
@@ -1141,12 +1161,14 @@ namespace HITO2_IPO_NUEVO
                     img_tb_correoGuia.Source = imagCheck;
                     img_tb_correoGuia.Visibility = Visibility.Visible;
                     img_tb_correoGuia.ToolTip = "Formato adecuado";
+                    tb_correoguia.Background = Brushes.Green;
                 }
                 else
                 {
                     img_tb_correoGuia.Source = imagCross;
                     img_tb_correoGuia.Visibility = Visibility.Visible;
                     img_tb_correoGuia.ToolTip = "Debes introducir un email";
+                    tb_correoguia.Background = Brushes.Red;
                 }
             }
             else
@@ -1154,6 +1176,7 @@ namespace HITO2_IPO_NUEVO
                 img_tb_correoGuia.Source = imagCross;
                 img_tb_correoGuia.Visibility = Visibility.Visible;
                 img_tb_correoGuia.ToolTip = "Debes introducir un formato válido";
+                tb_correoguia.Background = Brushes.Red;
             }
         }
         private void click_editar_excursionista(object sender, RoutedEventArgs e)

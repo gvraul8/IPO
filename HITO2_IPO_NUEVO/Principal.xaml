@@ -342,8 +342,8 @@
                             <Label>
 
                             </Label >
-                            <CheckBox x:Name="chb_apuntarseRuta" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="19" Click="click_checkbox_apuntarse_ruta">
-                                <TextBlock Text="Pulse para apuntarse a la ruta" />
+                            <CheckBox x:Name="chb_apuntarseRuta" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="19" Click="click_checkbox_apuntarse_ruta" IsChecked="False" IsEnabled ="False" ToolTipService.ShowOnDisabled="True"  >
+                                <TextBlock x:Name="text_check" Text="Pulse para apuntarse a la ruta" ToolTip="Marque para apuntarse a la ruta seleccionada" />
                             </CheckBox>
 
                         </Grid>
@@ -440,10 +440,10 @@
                                         <TextBox x:Name="tb_idiomas" IsReadOnly="True" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" />
 
                                         <TextBlock x:Name="lb_telefonoguia" TextWrapping="Wrap" Text="Teléfono" Grid.Row="2" Grid.ColumnSpan="2" />
-                                        <TextBox x:Name="tb_telefonoguia" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <TextBox x:Name="tb_telefonoguia" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2" PreviewTextInput="TelefonoFormatGuia"/>
 
                                         <TextBlock x:Name="lb_correoguia" TextWrapping="Wrap" Text="Correo electrónico" Grid.Row="4" Grid.ColumnSpan="2" Grid.RowSpan="2" />
-                                        <TextBox x:Name="tb_correoguia"  IsReadOnly="True" Grid.Row="5" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                        <TextBox x:Name="tb_correoguia"  IsReadOnly="True" Grid.Row="5" VerticalAlignment="Top" Grid.ColumnSpan="2" PreviewTextInput="emailFormatGuia"/>
 
                                         <TextBlock x:Name="lb_disponibilidad" TextWrapping="Wrap" Text="Disponibilidad" Grid.Row="6" Grid.ColumnSpan="2" />
                                         <TextBox x:Name="tb_disponibilidad" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="7" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
@@ -886,9 +886,9 @@
                                     <TextBlock x:Name="tb_excursionistas"  FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Text="EXCURSIONISTAS" Grid.Column="0" Grid.ColumnSpan="5" Width="166" Grid.Row="1" />
                                     <ListBox  x:Name="lb_ofertas" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,26,0" Grid.RowSpan="3" Height="90" VerticalAlignment="Top" />
                                     <ListBox  x:Name="lb_exc" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,27,3" Grid.RowSpan="3" Height="90" RenderTransformOrigin="0.482,0.315" PreviewMouseLeftButtonDown="lstEx_SelectionChanged" />
-                                    <Button x:Name="añadir" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,40,241,0" Grid.RowSpan="2" Background="Transparent" Click="click_añadir_destinatario_Oferta" >
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Source="/Imagenes/mayor-que.png" Width="25" ToolTip="Pulse después de seleccionar a un usuario al que quiera enviar la oferta" />
+                                    <Button x:Name="añadir" Grid.Column="2" Grid.Row="3" Margin="0,40,241,0" Grid.RowSpan="2" Background="Transparent" BorderBrush="Transparent" Click="click_añadir_destinatario_Oferta" Grid.ColumnSpan="2" >
+                                        <StackPanel Orientation="Horizontal" Height="20" Width="20">
+                                            <Image Source="/Imagenes/mayor-que.png" Width="20" ToolTip="Pulse después de seleccionar a un usuario al que quiera enviar la oferta" Height="18" VerticalAlignment="Top"/>
                                             <TextBlock  VerticalAlignment="Center"  Width="Auto"><Run /></TextBlock>
                                         </StackPanel>
 

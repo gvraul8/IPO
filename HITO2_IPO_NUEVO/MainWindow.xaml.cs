@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 
 namespace HITO2_IPO_NUEVO
 {
@@ -68,6 +69,8 @@ namespace HITO2_IPO_NUEVO
                 }
                 else
                 {
+                    pb_contrasena.Background = Brushes.Red;
+                    pb_contrasena.BorderBrush = Brushes.Red;
                     lb_errorCombinacion.Visibility = Visibility.Visible;
                 }
                 
