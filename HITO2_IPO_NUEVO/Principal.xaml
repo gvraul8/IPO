@@ -333,16 +333,20 @@
 
                         </Grid>
                         <Grid  Grid.Column="1" Grid.Row="1" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="69*"/>
+                                <ColumnDefinition Width="218*"/>
+                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="0.15*"/>
                                 <RowDefinition Height="0.70*"/>
                                 <RowDefinition Height="0.15*"/>
                             </Grid.RowDefinitions>
 
-                            <Label>
+                            <Label Grid.ColumnSpan="2" Margin="0,0,0,50" Grid.RowSpan="2">
 
                             </Label >
-                            <CheckBox x:Name="chb_apuntarseRuta" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="19" Click="click_checkbox_apuntarse_ruta" IsChecked="False" IsEnabled ="False" ToolTipService.ShowOnDisabled="True"  >
+                            <CheckBox x:Name="chb_apuntarseRuta" Grid.Row="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="19" Click="click_checkbox_apuntarse_ruta" IsChecked="False" IsEnabled ="False" ToolTipService.ShowOnDisabled="True" Grid.ColumnSpan="2"  >
                                 <TextBlock x:Name="text_check" Text="Pulse para apuntarse a la ruta" ToolTip="Marque para apuntarse a la ruta seleccionada" />
                             </CheckBox>
 
