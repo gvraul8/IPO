@@ -38,8 +38,8 @@ namespace HITO2_IPO_NUEVO
         private Uri IMAGEN_OFERTA_DEFAULT = (new Uri("https://i0.wp.com/rogarsol.com/wp-content/uploads/2017/07/oferta.png?resize=301%2C167", UriKind.Absolute));
         private Uri IMAGEN_PDI_DEFAULT = (new Uri("https://img.freepik.com/fotos-premium/puntos-destino-viaje-mapa-indicado-chinchetas-coloridas_93675-31562.jpg?w=2000", UriKind.Absolute));
         
-        static Guia guiaNulo = null;
-        static Ruta rutaNula = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaNulo);
+        static Guia guiaGlobal = null;
+        //static Ruta rutaNula = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaNulo);
 
         private bool impresoNombresRutas = false;
         private bool editandoRuta = false;
@@ -168,6 +168,14 @@ namespace HITO2_IPO_NUEVO
             }
         }
 
+        private void imprimeTodasRutas()
+        {
+            foreach (Ruta rutaAux in listadoRutas)
+            {
+                ListBoxExcursionistas.Items.Add(rutaAux.Nombre);
+            }
+        }
+
         private void imprimirNombreRutas(int cb_selected)
         {
 
@@ -283,6 +291,13 @@ namespace HITO2_IPO_NUEVO
             tiOfertas.IsEnabled = true;
 
             dp_fecha.Background = Brushes.Transparent;
+            tb_plazas.Background = Brushes.Transparent;
+
+            guiaGlobal = null;
+
+            bt_anadir.Background = Brushes.Black;
+            bt_editar.Background = Brushes.Black;
+            bt_eliminar.Background = Brushes.Black;
         }
 
         private void cambiaModoCasillasRuta(bool soloLectura)
@@ -434,7 +449,7 @@ namespace HITO2_IPO_NUEVO
             bt_consultarPDis.IsEnabled = true;
             
             tcPestanas.SelectedIndex = 4;
-
+            ListBoxPDI.Items.Clear();
             int index = buscaRuta(tb_nombre.Text);
             if (index != -1)
             {
@@ -475,6 +490,10 @@ namespace HITO2_IPO_NUEVO
             bitmap.EndInit();
             img_ruta.Source = bitmap;
 
+            bt_anadir.Background = Brushes.Purple;
+            bt_editar.Background = Brushes.Black;
+            bt_eliminar.Background = Brushes.Black;
+
         }
         
 
@@ -493,30 +512,27 @@ namespace HITO2_IPO_NUEVO
 
         private void clickGuardarRuta(object sender, RoutedEventArgs e)
         {
-            Ruta rutaa = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaNulo);
-            rutaNula = rutaa;
+            Ruta rutaVacia = new Ruta("", "", "", "", DateTime.Today, "", 0, "", 0, guiaGlobal);
+            //rutaNula = rutaa;
             img_tb_plazas.Visibility = Visibility.Hidden;
-            if (rutaSinGuia)
-                rutaNula.Guia = null;
-
-
+            
 
             if (compruebaValidezCasillasRuta())
             {
-                rutaNula.Nombre = tb_nombre.Text;
-                rutaNula.Origen = tb_origen.Text;
-                rutaNula.Destino = tb_destino.Text;
-                rutaNula.Provincia = tb_provincia.Text;
-                rutaNula.Dificultad = tb_dificultad.Text;
-                rutaNula.PlazasDisponibles = int.Parse(tb_plazas.Text);
+                rutaVacia.Nombre = tb_nombre.Text;
+                rutaVacia.Origen = tb_origen.Text;
+                rutaVacia.Destino = tb_destino.Text;
+                rutaVacia.Provincia = tb_provincia.Text;
+                rutaVacia.Dificultad = tb_dificultad.Text;
+                rutaVacia.PlazasDisponibles = int.Parse(tb_plazas.Text);
 
 
 
                 foreach (Ruta rutaAux in listadoRutas)
                 {
-                    if (rutaAux.Nombre == rutaNula.Nombre)
+                    if (rutaAux.Nombre == rutaVacia.Nombre)
                     {
-                        rutaNula.Guia = rutaAux.Guia;
+                        rutaVacia.Guia = rutaAux.Guia;
                     }
                 }
                 if (!editandoRuta && Convert.ToDateTime(dp_fecha.Text) < DateTime.Now)
@@ -531,7 +547,7 @@ namespace HITO2_IPO_NUEVO
                 }
                 else
                 {
-                    rutaNula.Fecha = Convert.ToDateTime(dp_fecha.Text);
+                    rutaVacia.Fecha = Convert.ToDateTime(dp_fecha.Text);
                 }
 
 
@@ -543,31 +559,28 @@ namespace HITO2_IPO_NUEVO
                     tb_plazas.Background = Brushes.Red;
                     img_tb_plazas.ToolTip = "Las plazas disponibles deben estar entre 4 y 20";
                 }
-                else if (rutaNula.Guia != null && rutaTieneAlgunPDI(rutaNula.Nombre))
+                else if (!rutaSinGuia && rutaTieneAlgunPDI(rutaVacia.Nombre))
                 {
+                    if (guiaGlobal != null)
+                        rutaVacia.Guia = guiaGlobal;
+
                     img_bt_guardarRuta.Source = imagCheck;
                     img_bt_guardarRuta.Visibility = Visibility.Visible;
                     img_bt_guardarRuta.ToolTip = "Todos los datos requeridos han sido aportados";
 
-
-
-
-
-
-
-                    int posicionRuta = buscaRuta(rutaNula.Nombre);
-
-
-
+                    
+                    int posicionRuta = buscaRuta(tb_nombre.Text);
+                    
                     if (posicionRuta != -1)
                     {
-                        rutaNula.URL_RUTA = listadoRutas[posicionRuta].URL_RUTA;
-                        listadoRutas[posicionRuta] = rutaNula;
+                        
+                        rutaVacia.URL_RUTA = listadoRutas[posicionRuta].URL_RUTA;
+                        listadoRutas[posicionRuta] = rutaVacia;
                     }
                     else
                     {
-                        rutaNula.URL_RUTA = IMAGEN_RUTA_DEFAULT;
-                        listadoRutas.Add(rutaNula);
+                        rutaVacia.URL_RUTA = IMAGEN_RUTA_DEFAULT;
+                        listadoRutas.Add(rutaVacia);
                     }
                     tiRutas.IsEnabled = true;
                     tiGuia.IsEnabled = true;
@@ -578,6 +591,7 @@ namespace HITO2_IPO_NUEVO
 
                     inicializaComponentesRutas();
                     ListBoxRutas.Items.Clear();
+                    cb_tipoRuta.SelectedIndex = 0;
                     imprimirNombreRutas(0);
 
 
@@ -588,11 +602,12 @@ namespace HITO2_IPO_NUEVO
 
 
                     img_tb_plazas.Visibility = Visibility.Hidden;
+                   
 
 
 
                 }
-                else if (rutaNula.Guia == null && rutaTieneAlgunPDI(rutaNula.Nombre))
+                else if (rutaSinGuia && rutaTieneAlgunPDI(rutaVacia.Nombre))
                 {
                     bt_consultarPDis.Content = "Consultar PDIs";
 
@@ -615,7 +630,7 @@ namespace HITO2_IPO_NUEVO
 
 
                 }
-                else if (rutaNula.Guia != null && !rutaTieneAlgunPDI(rutaNula.Nombre))
+                else if (!rutaSinGuia && !rutaTieneAlgunPDI(rutaVacia.Nombre))
                 {
                     bt_verGuiaRuta.Content = "Consultar guia";
 
@@ -762,9 +777,11 @@ namespace HITO2_IPO_NUEVO
         {
             int posicionRuta = -1;
             int contador = 0;
-
-            foreach(Ruta rutaAux in listadoRutas)
+            //ListBoxExcursionistas.Items.Clear();
+            foreach (Ruta rutaAux in listadoRutas)
             {
+                
+                //ListBoxExcursionistas.Items.Add(rutaAux.Nombre + " ? " + nombreRuta);
                 if (rutaAux.Nombre == nombreRuta)
                 {
                     posicionRuta = contador;
@@ -811,6 +828,7 @@ namespace HITO2_IPO_NUEVO
             listadoRutas.Remove(listadoRutas[posicionRuta]);
             ListBoxRutas.Items.Clear();
             imprimirNombreRutas(0);
+            cb_tipoRuta.SelectedIndex = 0;
             inicializaComponentesRutas();
             List<PuntoInteres> listaAux = new List<PuntoInteres>(listadoPuntosInteres);
 
@@ -822,6 +840,10 @@ namespace HITO2_IPO_NUEVO
                 }
             }
             listadoPuntosInteres = listaAux;
+
+            bt_anadir.Background = Brushes.Black;
+            bt_editar.Background = Brushes.Black;
+            bt_eliminar.Background = Brushes.Purple;
         }
 
         private void click_editar_ruta(object sender, RoutedEventArgs e)
@@ -832,6 +854,10 @@ namespace HITO2_IPO_NUEVO
             tb_nombre.IsEnabled = false;
 
             editandoRuta = true;
+
+            bt_anadir.Background = Brushes.Black;
+            bt_editar.Background = Brushes.Purple;
+            bt_eliminar.Background = Brushes.Black;
         }
 
 
@@ -944,6 +970,10 @@ namespace HITO2_IPO_NUEVO
             img_tb_telefonoExcursionista.Visibility = Visibility.Hidden;
             img_tb_correoExcursionista.Visibility = Visibility.Hidden;
             tb_edad.Background = Brushes.Transparent;
+
+            bt_anadirExcursionista.Background = Brushes.Black;
+            bt_editarExcursionista.Background = Brushes.Black;
+            bt_eliminarExcursionista.Background = Brushes.Black;
         }
 
         private void cambiaModoCasillasExcursionista(bool soloLectura)
@@ -1079,6 +1109,10 @@ namespace HITO2_IPO_NUEVO
             bitmap.UriSource = IMAGEN_USUARIO_DEFAULT;
             bitmap.EndInit();
             img_excursionista.Source = bitmap;
+
+            bt_anadirExcursionista.Background = Brushes.Purple;
+            bt_editarExcursionista.Background = Brushes.Black;
+            bt_eliminarExcursionista.Background = Brushes.Black;
         }
 
         private void compruebaValidezCasillasExcursionista(object sender, TextCompositionEventArgs e)
@@ -1325,7 +1359,11 @@ namespace HITO2_IPO_NUEVO
             bt_guardarEx.IsEnabled = true;
 
             tb_nombre_excursionista.IsEnabled = false;
-            
+
+            bt_anadirExcursionista.Background = Brushes.Black;
+            bt_editarExcursionista.Background = Brushes.Purple;
+            bt_eliminarExcursionista.Background = Brushes.Black;
+
 
         }
 
@@ -1352,6 +1390,10 @@ namespace HITO2_IPO_NUEVO
             listadoExcursionistas.Remove(listadoExcursionistas[posicionExcursionista]);
             imprimirNombreExcursionistas();
             inicializaComponenentesExcursionistas();
+
+            bt_anadirExcursionista.Background = Brushes.Black;
+            bt_editarExcursionista.Background = Brushes.Black;
+            bt_eliminarExcursionista.Background = Brushes.Purple;
 
         }
 
@@ -1469,6 +1511,10 @@ namespace HITO2_IPO_NUEVO
             tb_correoguia.Background = Brushes.Transparent;
             img_tb_telefonoGuia.Visibility = Visibility.Hidden;
             img_tb_correoGuia.Visibility = Visibility.Hidden;
+
+            bt_anadirGuia.Background = Brushes.Black;
+            bt_editarGuia.Background = Brushes.Black;
+            bt_eliminarGuia.Background = Brushes.Black;
 
 
         }
@@ -1624,6 +1670,10 @@ namespace HITO2_IPO_NUEVO
             bitmap.UriSource = IMAGEN_USUARIO_DEFAULT;
             bitmap.EndInit();
             img_guia.Source = bitmap;
+
+            bt_anadirGuia.Background = Brushes.Purple;
+            bt_editarGuia.Background = Brushes.Black;
+            bt_eliminarGuia.Background = Brushes.Black;
         }
 
         private void compruebaValidezCasillasGuia(object sender, TextCompositionEventArgs e)
@@ -1717,6 +1767,10 @@ namespace HITO2_IPO_NUEVO
 
             tb_nombreguia.IsEnabled = false;
 
+            bt_anadirGuia.Background = Brushes.Black;
+            bt_editarGuia.Background = Brushes.Purple;
+            bt_eliminarGuia.Background = Brushes.Black;
+
 
         }
 
@@ -1743,6 +1797,10 @@ namespace HITO2_IPO_NUEVO
             imprimirNombreGuias();
             inicializaComponenentesGuias();
 
+            bt_anadirGuia.Background = Brushes.Black;
+            bt_editarGuia.Background = Brushes.Black;
+            bt_eliminarGuia.Background = Brushes.Purple;
+
         }
 
         private void click_asignar_guia(object sender, RoutedEventArgs e)
@@ -1758,7 +1816,7 @@ namespace HITO2_IPO_NUEVO
             img_bt_guia.ToolTip = "La ruta ya cuenta con un guía asignado";
 
             int posicionGuia = buscaGuia(tb_nombreguia.Text);
-            rutaNula.Guia = listadoGuias[posicionGuia];
+            guiaGlobal = listadoGuias[posicionGuia];
 
             tcPestanas.SelectedIndex = 0;
             img_bt_asignarGuia.Visibility = Visibility.Hidden;
@@ -1850,6 +1908,10 @@ namespace HITO2_IPO_NUEVO
             bt_enviarOferta.IsEnabled = false;
 
             lb_exc.IsEnabled = false;
+
+            bt_anadirOfeta.Background = Brushes.Black;
+            bt_editarOferta.Background = Brushes.Black;
+            bt_eliminarOferta.Background = Brushes.Black;
         }
 
         private void cambiaModoCasillasOferta(bool soloLectura)
@@ -1943,6 +2005,10 @@ namespace HITO2_IPO_NUEVO
             bitmap.UriSource = IMAGEN_OFERTA_DEFAULT;
             bitmap.EndInit();
             img_oferta.Source = bitmap;
+
+            bt_anadirOfeta.Background = Brushes.Purple;
+            bt_editarOferta.Background = Brushes.Black;
+            bt_eliminarOferta.Background = Brushes.Black;
         }
 
          private void clickGuardarOferta(object sender, RoutedEventArgs e)
@@ -2058,6 +2124,10 @@ namespace HITO2_IPO_NUEVO
             bt_guardarOferta.IsEnabled = true;
 
             tb_nombre_oferta.IsEnabled = false;
+
+            bt_anadirOfeta.Background = Brushes.Black;
+            bt_editarOferta.Background = Brushes.Purple;
+            bt_eliminarOferta.Background = Brushes.Black;
         }
 
 
@@ -2067,6 +2137,10 @@ namespace HITO2_IPO_NUEVO
             listadoOfertas.Remove(listadoOfertas[posicionOferta]);
             imprimirNombreOfertas();
             inicializaComponenentesOfertas();
+
+            bt_anadirOfeta.Background = Brushes.Black;
+            bt_editarOferta.Background = Brushes.Black;
+            bt_eliminarOferta.Background = Brushes.Purple;
         }
 
         private void NumericOnlyIdOferta(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -2227,6 +2301,10 @@ namespace HITO2_IPO_NUEVO
 
             bt_mostrarRuta.IsEnabled = false;
 
+            bt_anadirPdi.Background = Brushes.Black;
+            bt_editarPdi.Background = Brushes.Black;
+            bt_eliminarPdi.Background = Brushes.Black;
+
         }
 
         private void cambiaModoCasillasPDIs(bool soloLectura)
@@ -2345,6 +2423,10 @@ namespace HITO2_IPO_NUEVO
             bitmap.UriSource = IMAGEN_PDI_DEFAULT;
             bitmap.EndInit();
             img_pdi.Source = bitmap;
+
+            bt_anadirPdi.Background = Brushes.Purple;
+            bt_editarPdi.Background = Brushes.Black;
+            bt_eliminarPdi.Background = Brushes.Black;
         }
 
         private void clickGuardarPDI(object sender, RoutedEventArgs e)
@@ -2444,6 +2526,10 @@ namespace HITO2_IPO_NUEVO
             cambiaModoCasillasPDIs(false);
             tb_nombre_pdi.IsEnabled = false;
             cb_ruta_PDI.IsEnabled = true;
+
+            bt_anadirPdi.Background = Brushes.Black;
+            bt_editarPdi.Background = Brushes.Purple;
+            bt_eliminarPdi.Background = Brushes.Black;
         }
 
 
@@ -2453,6 +2539,10 @@ namespace HITO2_IPO_NUEVO
             listadoPuntosInteres.Remove(listadoPuntosInteres[posicionPDI]);
             imprimirNombrePuntosInteres(cb_ruta_PDI.SelectedItem.ToString());
             inicializaComponenentesPuntosInteres();
+
+            bt_anadirPdi.Background = Brushes.Black;
+            bt_editarPdi.Background = Brushes.Black;
+            bt_eliminarPdi.Background = Brushes.Purple;
         }
 
         private void click_verRuta_PDI(object sender, RoutedEventArgs e)

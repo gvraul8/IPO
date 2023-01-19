@@ -277,7 +277,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button x:Name ="bt_editar" Grid.Column="2" Grid.Row="1"  VerticalAlignment="Center" Background="#FF423F3F" Foreground="White"  Click="click_editar_ruta" >
+                            <Button x:Name ="bt_editar" Grid.Column="2" Grid.Row="1"  VerticalAlignment="Center" Background="#FF413F42" Foreground="White"  Click="click_editar_ruta" >
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="15" Source="/Imagenes/edit.png"  />
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  Width="Auto"><Run Text="Editar"/></TextBlock>
