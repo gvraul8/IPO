@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Guia>
-	<Guia User="user3" Pass="password3" Name="User3" LastName="User3 User3" Email="user3@uclm.es" LastLogin="1/1/1900" Phone="333333333" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/54781-1669835534.jpg?lm=1"
+	<Guia User="user3" Pass="password3" Name="Raúl" LastName="Gonzalez Velazquez" Email="user3@uclm.es" LastLogin="1/1/1900" Phone="333333333" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/54781-1669835534.jpg?lm=1"
 				   Idiomas="Español, Inglés" Disponibilidad="Fines de semana" RutasRealizadas="Ruta de Valhondo" RutasFuturas="Cahorros del Río Chillar,Parque Natural del Gorbea" />
 
-	<Guia User="user4" Pass="password4" Name="User4" LastName="User4 User4" Email="user4@uclm.es" LastLogin="1/1/1900" Phone="444444444" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/342229-1632686046.jpg?lm=1"
+	<Guia User="user4" Pass="password4" Name="Victor" LastName="Jimenz Diaz" Email="user4@uclm.es" LastLogin="1/1/1900" Phone="444444444" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/342229-1632686046.jpg?lm=1"
 				   Idiomas="Alemán, Francés" Disponibilidad="Sólo festivos" RutasRealizadas="Ruta de Pradera de Ordesa,Senda del Boquerón del Estena" RutasFuturas="Cahorros del Río Chillar"/>
 </Guia>

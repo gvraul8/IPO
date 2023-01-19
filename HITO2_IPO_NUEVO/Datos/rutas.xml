@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Cabecera>
 	<Ruta Nombre="Ruta de Valhondo" Origen="Finca la Gargantilla" Destino="Finca la Gargantilla" Provincia ="Ciudad Real"
-            Fecha ="20/12/2022 10:00:00" Dificultad="Media - Baja"
+            Fecha ="20/12/2022 10:00:00" Dificultad="Baja-Media"
             PlazasDisponibles="10" MaterialNecesario="Ropa deportiva" NumeroDeRealizaciones = "40" 
 		    URL_RUTA="https://s1.wklcdn.com/image_63/1907750/28731338/18355279.jpg"
 		    URL_INTERES ="http://runandwalk.opennemas.com/media/runandwalk/images/2014/11/03//2014110320093846749.jpg" Guia="user3"/>

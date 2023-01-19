@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Excursionista>
-	<Excursionista User="admin" Pass="admin" Name="Admin" LastName="Admin Admin" Email="admin@uclm.es" LastLogin="1/1/1900" Phone="000000000" ImgUrl="https://www.diariodenavarra.es/uploads/2012/08/01/60b173ba22e0b.jpeg" 
+	<Excursionista User="admin" Pass="admin" Name="Manolo" LastName="Diaz Diaz" Email="admin@uclm.es" LastLogin="1/1/1900" Phone="000000000" ImgUrl="https://www.diariodenavarra.es/uploads/2012/08/01/60b173ba22e0b.jpeg" 
 				   Edad="20" Notificaciones="True" RutasRealizadas="Ruta de Valhondo,Ruta de Pradera de Ordesa" RutasFuturas="Parque Natural del Gorbea,Cahorros del Río Chillar" />
 	
-	<Excursionista User="user1" Pass="password1" Name="User1" LastName="User1 User1" Email="user1@uclm.es" LastLogin="1/1/1900" Phone="111111111" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/362086-1603095588.jpg?lm=1"
+	<Excursionista User="user1" Pass="password1" Name="Pablo" LastName="Ancos Ancos" Email="user1@uclm.es" LastLogin="1/1/1900" Phone="111111111" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/362086-1603095588.jpg?lm=1"
 				   Edad="34" Notificaciones="False" RutasRealizadas="Ruta de Valhondo" RutasFuturas="Cahorros del Río Chillar" />
 
-	<Excursionista User="user2" Pass="password2" Name="User2" LastName="User2 User2" Email="user2@uclm.es" LastLogin="1/1/1900" Phone="222222222" ImgUrl="https://www.realmadryt.pl/static/images/photo/6b60d5f3-a04e-48a2-bc7e-26658b5ac5e6.jpg"
+	<Excursionista User="user2" Pass="password2" Name="Manuel" LastName="Gallego Gallego" Email="user2@uclm.es" LastLogin="1/1/1900" Phone="222222222" ImgUrl="https://www.realmadryt.pl/static/images/photo/6b60d5f3-a04e-48a2-bc7e-26658b5ac5e6.jpg"
 				   Edad="45" Notificaciones="True" RutasRealizadas="Senda del Boquerón del Estena" RutasFuturas="Parque Natural del Gorbea,Cahorros del Río Chillar"/>
 </Excursionista>

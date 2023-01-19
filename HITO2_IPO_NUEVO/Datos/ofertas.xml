@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Oferta>
-	<Oferta Id="1" Descripcion="Comida y bebida incluídas
-			Descuento del 25% para familias numerosas" Ruta="Ruta de Pradera de Ordesa" IMG_OFERTA="https://www.rutasporelmonte.com/wp-content/uploads/2020/08/IMG_20200824_104959.jpg"/>
-	<Oferta Id="2" Descripcion="Noche en un hotel incluida
-			Mitad de precio si traes a dos amigos" Ruta="Senda del Boquerón del Estena" IMG_OFERTA="https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/cabaneros/boqueron-estena_tcm30-63381.png"/>
-	<Oferta Id="3" Descripcion="Camping incluido
-			10% de descuento" Ruta="Ruta de Valhondo" IMG_OFERTA="https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/cabaneros/gargantilla_tcm30-63420.png"/>
+	<Oferta Id="1" Nombre="Pack comida/bebida" Descripcion="Comida y bebida incluídas. Descuento del 25% para familias numerosas" Ruta="Ruta de Pradera de Ordesa" IMG_OFERTA="https://www.rutasporelmonte.com/wp-content/uploads/2020/08/IMG_20200824_104959.jpg"/>
+	<Oferta Id="2" Nombre="Pack hotel " Descripcion="Noche en un hotel incluida. Mitad de precio si traes a dos amigos" Ruta="Senda del Boquerón del Estena" IMG_OFERTA="https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/cabaneros/boqueron-estena_tcm30-63381.png"/>
+	<Oferta Id="3" Nombre="Pack camping" Descripcion="Camping incluido. 10% de descuento" Ruta="Ruta de Valhondo" IMG_OFERTA="https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/cabaneros/gargantilla_tcm30-63420.png"/>
 </Oferta>

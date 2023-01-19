@@ -28,15 +28,15 @@
                 <ColumnDefinition Width="0.05*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.1*"/>
-                <RowDefinition Height="0.25*"/>
-                <RowDefinition Height="0.05*"/>
-                <RowDefinition Height="0.45*"/>
-                <RowDefinition Height="0.1*"/>
-                <RowDefinition Height="0.05*"/>
+                <RowDefinition Height="17*"/>
+                <RowDefinition Height="244*"/>
+                <RowDefinition Height="37*"/>
+                <RowDefinition Height="335*"/>
+                <RowDefinition Height="74*"/>
+                <RowDefinition Height="37*"/>
             </Grid.RowDefinitions>
-            <Image x:Name="imgUsuario" HorizontalAlignment="Center" Height="Auto" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Grid.Row="1" Source="/Imagenes/fotoUsuario.jpg"/>
-            <Grid x:Name="gridLabelsUsuario"  HorizontalAlignment="Left" Height="325" VerticalAlignment="Top" Width="228" Grid.Column="1" Grid.Row="3">
+            <Image x:Name="imgUsuario" HorizontalAlignment="Center" Height="274" VerticalAlignment="Center" Width="178" Grid.Column="1" Grid.Row="1" Source="/Imagenes/fotoUsuario.jpg"/>
+            <Grid x:Name="gridLabelsUsuario"  HorizontalAlignment="Left" Height="325" VerticalAlignment="Top" Width="228" Grid.Column="1" Grid.Row="2" Margin="0,37,0,0" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.16*"/>
                     <RowDefinition Height="0.16*"/>
@@ -76,7 +76,7 @@
 
             </Grid>
 
-            <Viewbox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Width="Auto" Height="Auto" VerticalAlignment="Center" MaxHeight="60" MaxWidth="120">
+            <Viewbox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Width="120" Height="33" VerticalAlignment="Center" MaxHeight="60" MaxWidth="120">
                 <Button x:Name="btCerrarSesion" Content="Cerrar sesión"  Background="#FFC54545" Foreground="White" 
                     BorderBrush="#FFC54545" Click="btCerrarSesion_Click" />
             </Viewbox>
@@ -208,16 +208,24 @@
                                     <TextBlock x:Name="lb_provincia" TextWrapping="Wrap" Text="Provincia" Grid.Row="4" Grid.Column="0" Grid.RowSpan="2" />
                                     <TextBox x:Name="tb_provincia" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="5" VerticalAlignment="Top" Grid.Column="0" KeyDown="tb_provincia_KeyDown" />
 
-                                    <TextBlock x:Name="lb_fecha" TextWrapping="Wrap" Text="Fecha y hora" Grid.Row="6" Grid.Column="0" />
+                                    <TextBlock x:Name="lb_fecha" TextWrapping="Wrap" Text="Fecha " Grid.Row="6" Grid.Column="0" />
                                     <DatePicker x:Name="dp_fecha" Grid.Row="7" VerticalAlignment="Top" Grid.Column="0" KeyDown="dp_fecha_KeyDown"/>
                                     <Image x:Name="img_tb_fecha" Grid.Column="1" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="2,0,0,0" Grid.RowSpan="1" Grid.Row="7"/>
 
                                     <TextBlock x:Name="lb_dificultad" TextWrapping="Wrap" Text="Dificultad" Grid.Row="8" Grid.Column="0" Grid.RowSpan="2" />
-                                    <TextBox x:Name="tb_dificultad"  IsReadOnly="True" Grid.Row="9" VerticalAlignment="Top" Grid.Column="0" KeyDown="tb_dificultad_KeyDown"/>
+                                    <ComboBox x:Name="tb_dificultad"  IsReadOnly="True" Grid.Row="9" VerticalAlignment="Top" Grid.Column="0" KeyDown="tb_dificultad_KeyDown">
+                                        <ComboBoxItem Content="Baja"/>
+                                        <ComboBoxItem Content="Baja-Media"/>
+                                        <ComboBoxItem Content="Media"/>
+                                        <ComboBoxItem Content="Media-Alta"/>
+                                        <ComboBoxItem Content="Alta"/>
+                                    </ComboBox>
+
+
                                     <Image x:Name="img_tb_dificultad" Grid.Column="1" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="2,0,0,0" Grid.RowSpan="1" Grid.Row="9"/>
 
                                     <TextBlock x:Name="lb_plazas" TextWrapping="Wrap" Text="Plazas disponibles" Grid.Row="10" Grid.Column="0" />
-                                    <TextBox x:Name="tb_plazas" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="11" VerticalAlignment="Top" Grid.Column="0" PreviewTextInput="NumericOnly"/>
+                                    <TextBox x:Name="tb_plazas" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="11" VerticalAlignment="Top" Grid.Column="0" PreviewTextInput="NumericOnly" />
                                     <Image x:Name="img_tb_plazas" Grid.Column="1" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="20" Margin="2,0,0,0" Grid.RowSpan="1" Grid.Row="11"/>
 
 
@@ -859,7 +867,7 @@
 
                                         <TextBlock x:Name="lb_descripcionoferta"  Text="Descripción" TextWrapping="Wrap" Grid.Row="4"></TextBlock>
 
-                                        <TextBox x:Name="tb_descripcionoferta"  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" IsReadOnly="True" Grid.Row="6" VerticalAlignment="Center" Height="117" FontSize="14"/>
+                                        <TextBox x:Name="tb_descripcionoferta"   TextWrapping="Wrap" IsReadOnly="True" Grid.Row="6" VerticalAlignment="Center" Height="117" FontSize="14"/>
                                         <ComboBox x:Name="cb_rutaOferta" HorizontalAlignment="Center" Height="49" Margin="0,6,0,0" Grid.RowSpan="2" Grid.Row="1" VerticalAlignment="Top" Width="225" FontSize="16"/>
 
 

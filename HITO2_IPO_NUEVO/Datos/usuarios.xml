@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Usuario>
-	<Usuario User="admin" Pass="admin" Name="Admin" LastName="Admin Admin" Email="admin@uclm.es" LastLogin="1/1/1900" Phone="000000000" ImgUrl="https://www.diariodenavarra.es/uploads/2012/08/01/60b173ba22e0b.jpeg" />
-	<Usuario User="user1" Pass="password1" Name="User1" LastName="User1 User1" Email="user1@uclm.es" LastLogin="1/1/1900" Phone="111111111" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/362086-1603095588.jpg?lm=1" />
-	<Usuario User="user2" Pass="password2" Name="User2" LastName="User2 User2" Email="user2@uclm.es" LastLogin="1/1/1900" Phone="222222222" ImgUrl="https://www.realmadryt.pl/static/images/photo/6b60d5f3-a04e-48a2-bc7e-26658b5ac5e6.jpg" />
-	<Usuario User="user3" Pass="password3" Name="User3" LastName="User3 User3" Email="user3@uclm.es" LastLogin="1/1/1900" Phone="333333333" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/54781-1669835534.jpg?lm=1" />
-	<Usuario User="user4" Pass="password4" Name="User4" LastName="User4 User4" Email="user4@uclm.es" LastLogin="1/1/1900" Phone="444444444" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/342229-1632686046.jpg?lm=1" />
+	<Usuario User="admin" Pass="admin" Name="Manolo" LastName="Diaz Diaz" Email="admin@uclm.es" LastLogin="1/1/1900" Phone="000000000" ImgUrl="https://www.diariodenavarra.es/uploads/2012/08/01/60b173ba22e0b.jpeg" />
+	<Usuario User="user1" Pass="password1" Name="Pablo" LastName="Ancos Ancos" Email="user1@uclm.es" LastLogin="1/1/1900" Phone="111111111" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/362086-1603095588.jpg?lm=1" />
+	<Usuario User="user2" Pass="password2" Name="Manuel" LastName="Gallego Gallego" Email="user2@uclm.es" LastLogin="1/1/1900" Phone="222222222" ImgUrl="https://www.realmadryt.pl/static/images/photo/6b60d5f3-a04e-48a2-bc7e-26658b5ac5e6.jpg" />
+	<Usuario User="user3" Pass="password3" Name="Raúl" LastName="González Velázquez" Email="user3@uclm.es" LastLogin="1/1/1900" Phone="333333333" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/54781-1669835534.jpg?lm=1" />
+	<Usuario User="user4" Pass="password4" Name="Victor" LastName="Jimenez Díaz" Email="user4@uclm.es" LastLogin="1/1/1900" Phone="444444444" ImgUrl="https://img.a.transfermarkt.technology/portrait/header/342229-1632686046.jpg?lm=1" />
 </Usuario>
 
