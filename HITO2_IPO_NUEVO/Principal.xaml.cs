@@ -2034,7 +2034,7 @@ namespace HITO2_IPO_NUEVO
                     }
                 }
 
-                int posicionOferta = buscaOferta(ofertaAux.Id);
+                int posicionOferta = buscaOferta(ofertaAux.Name);
                 if (posicionOferta == -1)
                 {
                     ofertaAux.IMG_OFERTA = IMAGEN_OFERTA_DEFAULT;
@@ -2097,13 +2097,13 @@ namespace HITO2_IPO_NUEVO
             return valido;
         }
 
-        private int buscaOferta(int idOferta)
+        private int buscaOferta(String idOferta)
         {
             int posicion = -1;
             int contador = 0;
             foreach (Oferta ofertaAux in listadoOfertas)
             {
-                if (ofertaAux.Id == idOferta)
+                if (ofertaAux.Name == idOferta)
                 {
                     posicion = contador;
                 }
@@ -2133,7 +2133,7 @@ namespace HITO2_IPO_NUEVO
 
         private void click_eliminar_oferta(object sender, RoutedEventArgs e)
         {
-            int posicionOferta = buscaOferta(int.Parse(tb_nombre_oferta.Text));
+            int posicionOferta = buscaOferta(tb_nombre_oferta.Text);
             listadoOfertas.Remove(listadoOfertas[posicionOferta]);
             imprimirNombreOfertas();
             inicializaComponenentesOfertas();
